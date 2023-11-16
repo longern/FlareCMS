@@ -11,20 +11,23 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link as RouterLink } from "react-router-dom";
 
+interface Post {
+  id: string;
+  title: string;
+  content: string;
+  published: string;
+  updated: string;
+}
+
 function App() {
-  const [posts, setPosts] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
     fetch("/api/posts")
       .then((response) => response.json() as Promise<any>)
       .then((body) => setPosts(body.items));
   }, []);
-
-  // handleClick function
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
 
   return (
     <div className="App">
@@ -38,7 +41,7 @@ function App() {
             edge="end"
             color="inherit"
             aria-label="menu"
-            onClick={handleClick}
+            onClick={(e) => setAnchorEl(e.currentTarget)}
           >
             <MenuIcon />
           </IconButton>
@@ -55,13 +58,13 @@ function App() {
               Home
             </MenuItem>
             <MenuItem component={RouterLink} to="/about">About</MenuItem>
-            <MenuItem component={RouterLink} to="/posts/edit/0">New Post</MenuItem>
+            <MenuItem component={RouterLink} to="/posts/edit/new">New Post</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
       <Container maxWidth="md" sx={{ marginTop: "1rem" }}>
         {posts.map((post) => (
-          <Card key={post.id}>
+          <Card key={post.id} sx={{ marginBottom: "1rem" }}>
             <CardContent>
               <Typography variant="h4" component="h2">
                 {post.title}
@@ -69,7 +72,16 @@ function App() {
               <Typography variant="subtitle2" color="text.secondary">
                 {new Date(post.published).toLocaleString()}
               </Typography>
-              {post.content}
+              <Typography
+                variant="body1"
+                component="div"
+                dangerouslySetInnerHTML={{ __html: post.content }}
+                sx={{
+                  "& img": {
+                    maxWidth: "100%",
+                  },
+                }}
+              />
             </CardContent>
           </Card>
         ))}

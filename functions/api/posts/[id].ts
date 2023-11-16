@@ -1,22 +1,26 @@
 import { drizzle } from "drizzle-orm/d1";
 import { posts } from "../schema";
+import { eq } from "drizzle-orm";
 import { basicAuthenication } from "../auth";
 
 interface Env {
   DB: D1Database;
-  USERNAME?: string;
-  PASSWORD?: string;
 }
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
-  const env = context.env;
+  const { env, params } = context;
+  const key = params.id as string;
   const db = drizzle(env.DB);
-  const items = await db.select().from(posts).all();
-  return Response.json({ items });
+  const items = await db.select().from(posts).where(eq(posts.id, key));
+  if (items.length === 0) {
+    return Response.json({ error: "Not found" }, { status: 404 });
+  } else {
+    return Response.json(items[0]);
+  }
 };
 
-export const onRequestPost: PagesFunction<Env> = async (context) => {
-  const { request, env } = context;
+export const onRequestDelete: PagesFunction<Env> = async (context) => {
+  const { request, env, params } = context;
 
   if (!request.headers.get("Authorization") || !basicAuthenication(context)) {
     return new Response("Unauthorized", {
@@ -25,12 +29,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     });
   }
 
+  const key = params.id as string;
   const db = drizzle(env.DB);
-  const body = (await request.json()) as typeof posts.$inferInsert;
-  body.id = crypto.randomUUID();
-  const result = await db.insert(posts).values(body).execute();
+  const result = await db.delete(posts).where(eq(posts.id, key)).execute();
   if (result.success) {
-    return Response.json(body);
+    return new Response(null, { status: 204 });
   } else {
     return Response.json({ error: result.error }, { status: 500 });
   }
