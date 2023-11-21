@@ -12,6 +12,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   const env = context.env;
   const db = drizzle(env.DB);
   const items = await db.select().from(posts).all();
+  items.reverse();
   return Response.json({ items });
 };
 

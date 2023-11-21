@@ -19,6 +19,32 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   }
 };
 
+export const onRequestPatch: PagesFunction<Env> = async (context) => {
+  const { request, env, params } = context;
+
+  if (!request.headers.get("Authorization") || !basicAuthenication(context)) {
+    return new Response("Unauthorized", {
+      status: 401,
+      headers: { "WWW-Authenticate": "Basic" },
+    });
+  }
+
+  const key = params.id as string;
+  const db = drizzle(env.DB);
+  const body = (await request.json()) as typeof posts.$inferInsert;
+  delete body.id;
+  const result = await db
+    .update(posts)
+    .set(body)
+    .where(eq(posts.id, key))
+    .execute();
+  if (result.success) {
+    return Response.json(body);
+  } else {
+    return Response.json({ error: result.error }, { status: 500 });
+  }
+}
+
 export const onRequestDelete: PagesFunction<Env> = async (context) => {
   const { request, env, params } = context;
 

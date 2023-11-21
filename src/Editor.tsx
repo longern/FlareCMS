@@ -62,7 +62,14 @@ function Editor() {
 
   useEffect(() => {
     quill.current?.focus();
-  }, []);
+    if (id === "new") return;
+    fetch(`/api/posts/${id}`)
+      .then((res) => res.json() as Promise<{ title: string; content: string }>)
+      .then((res) => {
+        setTitle(res.title);
+        setContent(res.content);
+      });
+  }, [id]);
 
   return (
     <div className="App">

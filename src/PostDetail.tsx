@@ -11,7 +11,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
 
 export interface Post {
   id: string;
@@ -90,6 +90,7 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
 
 function PostDetail() {
   const [post, setPost] = useState<Post | null>(null);
+  const location = useLocation();
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
@@ -97,7 +98,7 @@ function PostDetail() {
       .then((response) => response.json() as Promise<Post>)
       .then((body) => setPost(body))
       .catch((err) => console.error(err));
-  }, [id]);
+  }, [id, location]);
 
   return (
     <div className="App">
