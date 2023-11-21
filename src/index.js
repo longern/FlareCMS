@@ -6,6 +6,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import App from "./App";
 import Editor from "./Editor";
+import PostDetail from "./PostDetail";
 
 const darkTheme = createTheme({
   palette: {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+  },
+  {
+    path: "/posts/:id",
+    element: <PostDetail />,
   },
   {
     path: "/posts/edit/:id",

@@ -1,85 +1,15 @@
 import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link as RouterLink } from "react-router-dom";
 
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  published: string;
-  updated: string;
-}
-
-function PostCard({ post }: { post: Post }) {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  function handleDelete() {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this post?"
-    );
-    if (!confirmed) return;
-    fetch(`/api/posts/${post.id}`, {
-      method: "DELETE",
-    }).then(() => window.location.reload());
-  }
-
-  return (
-    <Card sx={{ marginBottom: "1rem" }}>
-      <IconButton
-        size="small"
-        sx={{ float: "right" }}
-        aria-label="manage post"
-        onClick={(e) => setAnchorEl(e.currentTarget)}
-      >
-        <MoreHorizIcon />
-      </IconButton>
-      <Menu
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={() => setAnchorEl(null)}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-      >
-        <MenuItem component={RouterLink} to={`/posts/edit/${post.id}`}>
-          Edit
-        </MenuItem>
-        <MenuItem color="error" onClick={handleDelete}>
-          Delete
-        </MenuItem>
-      </Menu>
-      <CardContent>
-        <Typography variant="h5" component="h2" mb={1}>
-          {post.title}
-        </Typography>
-        <Typography variant="subtitle2" color="text.secondary">
-          {new Date(post.published).toLocaleString()}
-        </Typography>
-        <Typography
-          variant="body1"
-          component="div"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-          sx={{
-            "& img": {
-              maxWidth: "100%",
-            },
-          }}
-        />
-      </CardContent>
-    </Card>
-  );
-}
+import { Post, PostCard } from "./PostDetail";
 
 function App() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -130,7 +60,7 @@ function App() {
       </AppBar>
       <Container maxWidth="md" sx={{ marginTop: "1rem" }}>
         {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
+          <PostCard key={post.id} post={post} to={`/posts/${post.id}`} />
         ))}
       </Container>
     </div>
