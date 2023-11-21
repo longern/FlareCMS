@@ -25,7 +25,7 @@ function App() {
 
   useEffect(() => {
     fetch("/api/posts")
-      .then((response) => response.json() as Promise<any>)
+      .then((response) => response.json() as Promise<{ items: Post[] }>)
       .then((body) => setPosts(body.items));
   }, []);
 
@@ -34,7 +34,7 @@ function App() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            My Blog
+            {process.env.REACT_APP_SITE_NAME}
           </Typography>
           <IconButton
             size="large"
@@ -66,7 +66,7 @@ function App() {
         {posts.map((post) => (
           <Card key={post.id} sx={{ marginBottom: "1rem" }}>
             <CardContent>
-              <Typography variant="h4" component="h2">
+              <Typography variant="h5" component="h2" mb={1}>
                 {post.title}
               </Typography>
               <Typography variant="subtitle2" color="text.secondary">

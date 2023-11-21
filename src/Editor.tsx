@@ -49,7 +49,7 @@ function Editor() {
       method: "POST",
       body: file,
     })
-      .then((res) => res.json() as Promise<any>)
+      .then((res) => res.json() as Promise<{ id: string }>)
       .then((res) => {
         if (!quill.current) return;
         quill.current.focus();
@@ -66,7 +66,7 @@ function Editor() {
 
   return (
     <div className="App">
-      <Toolbar disableGutters sx={{ height: 48 }}>
+      <Toolbar variant="dense" disableGutters>
         <IconButton size="large" color="inherit" component={RouterLink} to="/">
           <ArrowBack />
         </IconButton>
