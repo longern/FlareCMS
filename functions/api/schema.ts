@@ -1,23 +1,23 @@
 import { sql } from "drizzle-orm";
-import { text, sqliteTable } from "drizzle-orm/sqlite-core";
+import { integer, text, sqliteTable } from "drizzle-orm/sqlite-core";
 
 export const posts = sqliteTable("posts", {
   id: text("id"),
-  published: text("published")
+  published: integer("published")
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-  updated: text("updated")
+    .default(sql`(CAST(unixepoch() * 1000 AS INTEGER))`),
+  updated: integer("updated")
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+    .default(sql`(CAST(unixepoch() * 1000 AS INTEGER))`),
   title: text("title").notNull(),
   content: text("content").notNull(),
 });
 
 export const replies = sqliteTable("replies", {
   id: text("id"),
-  published: text("published")
+  published: integer("published")
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+    .default(sql`(CAST(unixepoch() * 1000 AS INTEGER))`),
   content: text("content").notNull(),
   postId: text("postId").notNull(),
 });

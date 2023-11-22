@@ -1,0 +1,4 @@
+{
+  "schema": "./functions/api/schema.ts",
+  "out": "./drizzle"
+}
