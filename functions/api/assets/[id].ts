@@ -9,5 +9,9 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   if (!object) {
     return Response.json({ error: "Not found" }, { status: 404 });
   }
-  return new Response(object.body);
+
+  const headers = new Headers();
+  object.writeHttpMetadata(headers);
+  headers.set("catch-control", "public, max-age=31536000, immutable");
+  return new Response(object.body, { headers });
 };

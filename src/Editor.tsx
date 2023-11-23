@@ -41,10 +41,12 @@ function Editor() {
     }
   }
 
-  function handleUploadImage(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleUploadMedia(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
     event.target.value = "";
+
+    const fileType = file.type.split("/")[0];
     fetch("/api/assets", {
       method: "POST",
       body: file,
@@ -56,7 +58,7 @@ function Editor() {
         const range = quill.current.getEditor().getSelection();
         quill.current
           .getEditor()
-          .insertEmbed(range!.index, "image", "/api/assets/" + res.id);
+          .insertEmbed(range!.index, fileType, "/api/assets/" + res.id);
       });
   }
 
@@ -110,10 +112,10 @@ function Editor() {
           <Image />
           <input
             type="file"
-            accept="image/*"
-            alt="Upload Image"
+            accept="image/*,video/*"
+            alt="Upload Media"
             hidden
-            onChange={handleUploadImage}
+            onChange={handleUploadMedia}
           />
         </IconButton>
       </Container>
