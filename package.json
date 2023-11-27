@@ -23,6 +23,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build-functions": "wrangler pages functions build --outdir .wrangler/worker --minify && mv .wrangler/worker/index.js build/_worker.js",
+    "build-all": "npm run build && npm run build-functions",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
