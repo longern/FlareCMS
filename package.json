@@ -1,5 +1,5 @@
 {
-  "name": "blogger-api",
+  "name": "flarecms",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -22,6 +22,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build-functions": "wrangler pages functions build --outdir .wrangler/worker --minify && mv .wrangler/worker/index.js build/_worker.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

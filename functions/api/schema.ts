@@ -19,5 +19,7 @@ export const replies = sqliteTable("replies", {
     .notNull()
     .default(sql`(CAST(unixepoch() * 1000 AS INTEGER))`),
   content: text("content").notNull(),
-  postId: text("postId").notNull(),
+  postId: text("postId")
+    .notNull()
+    .references(() => posts.id, { onDelete: "cascade" }),
 });

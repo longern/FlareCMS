@@ -1,1 +1,1 @@
-# Blogger API
+# FlareCMS
