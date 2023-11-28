@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.bubble.css";
+import "react-quill/dist/quill.snow.css";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 
 function Editor() {
@@ -89,7 +89,8 @@ function Editor() {
       <Container
         sx={{
           mt: 2,
-          "& .ql-editor": { minHeight: "12em", margin: "0 -12px" },
+          "& .ql-container": { border: "none", margin: "0 -12px" },
+          "& .ql-editor": { minHeight: "12em" },
         }}
       >
         <TextField
@@ -103,7 +104,6 @@ function Editor() {
         />
         <ReactQuill
           ref={quill}
-          theme="bubble"
           modules={{ toolbar: false }}
           value={content}
           onChange={setContent}

@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
+import GlobalStyles from "@mui/material/GlobalStyles";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import App from "./App";
@@ -13,6 +14,16 @@ const darkTheme = createTheme({
     mode: "dark",
   },
 });
+
+const AppGlobalStyles = (
+  <GlobalStyles
+    styles={{
+      "html, body, #root, .App": {
+        height: "100%",
+      },
+    }}
+  />
+);
 
 const router = createBrowserRouter([
   {
@@ -34,6 +45,7 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
+      {AppGlobalStyles}
       <RouterProvider router={router} />
     </ThemeProvider>
   </React.StrictMode>

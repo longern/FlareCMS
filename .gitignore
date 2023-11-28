@@ -65,3 +65,4 @@ TEST-results.xml
 /lib/
 .wrangler/
 drizzle/
+.env*.local
