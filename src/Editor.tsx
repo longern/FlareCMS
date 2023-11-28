@@ -1,5 +1,6 @@
 import { ArrowBack, Image, Send } from "@mui/icons-material";
 import { Box, IconButton } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
@@ -14,6 +15,7 @@ function Editor() {
   const { id } = useParams<{ id: string }>();
   const quill = React.useRef<ReactQuill | null>(null);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   function handleSend() {
     if (!content) return;
@@ -91,6 +93,9 @@ function Editor() {
           mt: 2,
           "& .ql-container": { border: "none", margin: "0 -12px" },
           "& .ql-editor": { minHeight: "12em" },
+          "& .ql-editor.ql-blank::before": {
+            color: theme.palette.text.disabled,
+          },
         }}
       >
         <TextField
@@ -106,6 +111,7 @@ function Editor() {
           ref={quill}
           modules={{ toolbar: false }}
           value={content}
+          placeholder={"Write something..."}
           onChange={setContent}
         />
         <IconButton component="label" size="small" color="inherit">
