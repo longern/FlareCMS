@@ -1,6 +1,6 @@
-import { ArrowBack, Image, Send } from "@mui/icons-material";
+import { ArrowBack, Send } from "@mui/icons-material";
 import { Box, IconButton } from "@mui/material";
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from "@mui/material/styles";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
@@ -43,29 +43,38 @@ function Editor() {
     }
   }
 
-  function handleUploadMedia(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    event.target.value = "";
+  function handleUploadMedia() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*,video/*";
+    input.onchange = function () {
+      const file = input.files?.[0];
+      if (!file) return;
 
-    const fileType = file.type.split("/")[0];
-    fetch("/api/assets", {
-      method: "POST",
-      body: file,
-    })
-      .then((res) => res.json() as Promise<{ id: string }>)
-      .then((res) => {
-        if (!quill.current) return;
-        quill.current.focus();
-        const range = quill.current.getEditor().getSelection();
-        quill.current
-          .getEditor()
-          .insertEmbed(range!.index, fileType, "/api/assets/" + res.id);
-      });
+      const fileType = file.type.split("/")[0];
+      fetch("/api/assets", {
+        method: "POST",
+        body: file,
+      })
+        .then((res) => res.json() as Promise<{ id: string }>)
+        .then((res) => {
+          if (!quill.current) return;
+          quill.current.focus();
+          const range = quill.current.getEditor().getSelection();
+          quill.current
+            .getEditor()
+            .insertEmbed(range!.index, fileType, "/api/assets/" + res.id);
+        });
+    };
+    input.click();
   }
 
   useEffect(() => {
     quill.current?.focus();
+
+    const toolbar = quill.current?.getEditor().getModule("toolbar");
+    if (toolbar) toolbar.addHandler("image", handleUploadMedia);
+
     if (id === "new") return;
     fetch(`/api/posts/${id}`)
       .then((res) => res.json() as Promise<{ title: string; content: string }>)
@@ -76,7 +85,13 @@ function Editor() {
   }, [id]);
 
   return (
-    <div className="App">
+    <div
+      className="App"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Toolbar variant="dense" disableGutters>
         <IconButton size="large" color="inherit" component={RouterLink} to="/">
           <ArrowBack />
@@ -90,6 +105,7 @@ function Editor() {
       </Toolbar>
       <Container
         sx={{
+          overflowY: "auto",
           mt: 2,
           "& .ql-container": { border: "none", margin: "0 -12px" },
           "& .ql-editor": { minHeight: "12em" },
@@ -109,22 +125,31 @@ function Editor() {
         />
         <ReactQuill
           ref={quill}
-          modules={{ toolbar: false }}
           value={content}
           placeholder={"Write something..."}
+          modules={{ toolbar: "#ql-toolbar" }}
           onChange={setContent}
         />
-        <IconButton component="label" size="small" color="inherit">
-          <Image />
-          <input
-            type="file"
-            accept="image/*,video/*"
-            alt="Upload Media"
-            hidden
-            onChange={handleUploadMedia}
-          />
-        </IconButton>
       </Container>
+      <Box
+        sx={{
+          color: theme.palette.text.primary,
+          "& .ql-snow.ql-toolbar": { border: "none", borderTop: "1px solid gray" },
+          "& .ql-snow .ql-stroke": { stroke: theme.palette.text.primary },
+          "& .ql-snow .ql-fill": { fill: theme.palette.text.primary },
+          "& .ql-snow .ql-picker": { color: theme.palette.text.primary },
+        }}
+      >
+        <div id="ql-toolbar">
+          <button className="ql-bold"></button>
+          <button className="ql-italic"></button>
+          <button className="ql-underline"></button>
+          <button className="ql-link"></button>
+          <button className="ql-image"></button>
+          <button className="ql-clean"></button>
+        </div>
+      </Box>
+      <Box sx={{ flexBasis: "45%", flexShrink: 0, flexGrow: 1 }} />
     </div>
   );
 }
