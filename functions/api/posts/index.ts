@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/d1";
 import { posts } from "../schema";
+import sanitizeHtml from "sanitize-html";
 import { basicAuthenication } from "../auth";
 
 interface Env {
@@ -27,8 +28,13 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   }
 
   const db = drizzle(env.DB);
-  const body = (await request.json()) as typeof posts.$inferInsert;
+  const body: typeof posts.$inferInsert = await request.json();
   body.id = crypto.randomUUID();
+
+  if (body.content) {
+    body.content = sanitizeHtml(body.content);
+  }
+
   const result = await db.insert(posts).values(body).execute();
   if (result.success) {
     return Response.json(body);

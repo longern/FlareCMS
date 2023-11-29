@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/d1";
 import { posts } from "../schema";
 import { eq } from "drizzle-orm";
+import sanitizeHtml from "sanitize-html";
 import { basicAuthenication } from "../auth";
 
 interface Env {
@@ -29,14 +30,19 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
     });
   }
 
-  const key = params.id as string;
   const db = drizzle(env.DB);
-  const body = (await request.json()) as typeof posts.$inferInsert;
+  const body: typeof posts.$inferInsert = await request.json();
   delete body.id;
+
+  if (body.content) {
+    body.content = sanitizeHtml(body.content);
+  }
+
+  const postId = params.id as string;
   const result = await db
     .update(posts)
     .set(body)
-    .where(eq(posts.id, key))
+    .where(eq(posts.id, postId))
     .execute();
   if (result.success) {
     return Response.json(body);

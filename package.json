@@ -15,7 +15,8 @@
     "react-dom": "^18.2.0",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.19.0",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "sanitize-html": "^2.11.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -46,6 +47,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@cloudflare/workers-types": "^4.20231025.0",
+    "@types/sanitize-html": "^2.9.5",
     "drizzle-kit": "^0.20.2"
   }
 }
