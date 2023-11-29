@@ -11,7 +11,13 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
+import {
+  Link as RouterLink,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 export interface Post {
   id: string;
@@ -23,6 +29,8 @@ export interface Post {
 
 export function PostCard({ post, to }: { post: Post; to?: string }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
+  const theme = useTheme();
 
   function handleDelete() {
     const confirmed = window.confirm(
@@ -31,7 +39,7 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
     if (!confirmed) return;
     fetch(`/api/posts/${post.id}`, {
       method: "DELETE",
-    }).then(() => window.location.reload());
+    }).then(() => navigate("/"));
   }
 
   return (
@@ -56,7 +64,10 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
         <MenuItem component={RouterLink} to={`/posts/edit/${post.id}`}>
           Edit
         </MenuItem>
-        <MenuItem color="error" onClick={handleDelete}>
+        <MenuItem
+          onClick={handleDelete}
+          sx={{ color: theme.palette.error.main }}
+        >
           Delete
         </MenuItem>
       </Menu>
@@ -90,14 +101,15 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
 
 function PostDetail() {
   const [post, setPost] = useState<Post | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const location = useLocation();
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     fetch(`/api/posts/${id}`)
-      .then((response) => response.json() as Promise<Post>)
-      .then((body) => setPost(body))
-      .catch((err) => console.error(err));
+      .then((response) => response.json() as Promise<Post | { error: string }>)
+      .then((body) => ("error" in body ? setError(body.error) : setPost(body)))
+      .catch((err) => setError(err.message));
   }, [id, location]);
 
   return (
@@ -117,7 +129,7 @@ function PostDetail() {
         </Toolbar>
       </AppBar>
       <Container maxWidth="md" sx={{ marginTop: "1rem" }}>
-        {post && <PostCard post={post} />}
+        {error || (post && <PostCard post={post} />)}
       </Container>
     </div>
   );
