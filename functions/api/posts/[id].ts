@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/d1";
-import { posts } from "../schema";
+import { labels, posts } from "../schema";
 import { eq } from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
 import { basicAuthenication } from "../auth";
@@ -16,7 +16,14 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   if (items.length === 0) {
     return Response.json({ error: "Not found" }, { status: 404 });
   } else {
-    return Response.json(items[0]);
+    const item: Record<string, any> = items[0];
+    const postLabels = await db
+      .select({ name: labels.name })
+      .from(labels)
+      .where(eq(labels.postId, item.id))
+      .all();
+    item.labels = postLabels.map((label) => label.name);
+    return Response.json(item);
   }
 };
 
@@ -49,7 +56,7 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
   } else {
     return Response.json({ error: result.error }, { status: 500 });
   }
-}
+};
 
 export const onRequestDelete: PagesFunction<Env> = async (context) => {
   const { request, env, params } = context;

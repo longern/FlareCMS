@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/d1";
-import { posts } from "../schema";
+import { labels, posts } from "../schema";
 import sanitizeHtml from "sanitize-html";
 import { basicAuthenication } from "../auth";
 
@@ -28,15 +28,23 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   }
 
   const db = drizzle(env.DB);
-  const body: typeof posts.$inferInsert = await request.json();
+  const body: typeof posts.$inferInsert & { labels?: string[] } =
+    await request.json();
   body.id = crypto.randomUUID();
 
   if (body.content) {
     body.content = sanitizeHtml(body.content);
   }
 
+  const postLabels: string[] = body.labels || [];
+  delete body.labels;
+
   const result = await db.insert(posts).values(body).execute();
   if (result.success) {
+    await db
+      .insert(labels)
+      .values(postLabels.map((name) => ({ postId: body.id, name })))
+      .execute();
     return Response.json(body);
   } else {
     return Response.json({ error: result.error }, { status: 500 });
