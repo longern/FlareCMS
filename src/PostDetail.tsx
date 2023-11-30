@@ -25,6 +25,7 @@ export interface Post {
   content: string;
   published: string;
   updated: string;
+  labels?: string[];
 }
 
 export function PostCard({ post, to }: { post: Post; to?: string }) {
@@ -94,6 +95,20 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
             },
           }}
         />
+        {post.labels && post.labels.length > 0 && (
+          <Typography variant="subtitle2" color="text.secondary">
+            {post.labels.map((label) => (
+              <Link
+                key={label}
+                component={RouterLink}
+                to={`/posts/label/${label}`}
+                sx={{ marginRight: "0.5rem" }}
+              >
+                {`#${label}`}
+              </Link>
+            ))}
+          </Typography>
+        )}
       </CardContent>
     </Card>
   );
