@@ -1,3 +1,4 @@
+import { inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { labels, posts } from "../schema";
 import sanitizeHtml from "sanitize-html";
@@ -12,8 +13,27 @@ interface Env {
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   const env = context.env;
   const db = drizzle(env.DB);
-  const items = await db.select().from(posts).all();
+  const items: (typeof posts.$inferSelect & { labels?: string[] })[] = await db
+    .select()
+    .from(posts)
+    .all();
   items.reverse();
+
+  const postIds = items.map((item) => item.id);
+  const postLabels = await db
+    .select({ name: labels.name, postId: labels.postId })
+    .from(labels)
+    .where(inArray(labels.postId, postIds))
+    .all();
+  const postLabelsMap = postLabels.reduce((map, label) => {
+    if (!map[label.postId]) map[label.postId] = [];
+    map[label.postId].push(label.name);
+    return map;
+  }, {} as Record<string, string[]>);
+  items.forEach((item) => {
+    item.labels = postLabelsMap[item.id] || [];
+  });
+
   return Response.json({ items });
 };
 
