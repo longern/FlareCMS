@@ -12,6 +12,7 @@ import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 function Editor() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [uploading, setUploading] = useState(false);
   const { id } = useParams<{ id: string }>();
   const quill = React.useRef<ReactQuill | null>(null);
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ function Editor() {
     if (!content) return;
 
     if (id === "new") {
+      setUploading(true);
       fetch("/api/posts", {
         method: "POST",
         headers: {
@@ -31,6 +33,7 @@ function Editor() {
         .then((res) => res.json())
         .then(() => navigate("/"));
     } else {
+      setUploading(true);
       fetch(`/api/posts/${id}`, {
         method: "PATCH",
         headers: {
@@ -39,7 +42,7 @@ function Editor() {
         body: JSON.stringify({ title, content }),
       })
         .then((res) => res.json())
-        .then(() => navigate("/"));
+        .then(() => navigate(`/posts/${id}`));
     }
   }
 
@@ -99,7 +102,12 @@ function Editor() {
         <Box flexGrow={1} textAlign="center">
           {id === "new" ? "New Post" : "Edit Post"}
         </Box>
-        <IconButton size="large" color="inherit" onClick={handleSend}>
+        <IconButton
+          size="large"
+          color="inherit"
+          disabled={uploading}
+          onClick={handleSend}
+        >
           <Send />
         </IconButton>
       </Toolbar>
@@ -134,7 +142,10 @@ function Editor() {
       <Box
         sx={{
           color: theme.palette.text.primary,
-          "& .ql-snow.ql-toolbar": { border: "none", borderTop: "1px solid gray" },
+          "& .ql-snow.ql-toolbar": {
+            border: "none",
+            borderTop: "1px solid gray",
+          },
           "& .ql-snow .ql-stroke": { stroke: theme.palette.text.primary },
           "& .ql-snow .ql-fill": { fill: theme.palette.text.primary },
           "& .ql-snow .ql-picker": { color: theme.palette.text.primary },
