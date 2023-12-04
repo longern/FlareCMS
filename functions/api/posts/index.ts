@@ -61,10 +61,12 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   const result = await db.insert(posts).values(body).execute();
   if (result.success) {
-    await db
-      .insert(labels)
-      .values(postLabels.map((name) => ({ postId: body.id, name })))
-      .execute();
+    if (postLabels.length > 0) {
+      await db
+        .insert(labels)
+        .values(postLabels.map((name) => ({ postId: body.id, name })))
+        .execute();
+    }
     return Response.json(body);
   } else {
     return Response.json({ error: result.error }, { status: 500 });
