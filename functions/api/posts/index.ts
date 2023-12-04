@@ -53,7 +53,10 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   body.id = crypto.randomUUID();
 
   if (body.content) {
-    body.content = sanitizeHtml(body.content);
+    body.content = sanitizeHtml(body.content, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+      allowIframeRelativeUrls: true,
+    });
   }
 
   const postLabels: string[] = body.labels || [];

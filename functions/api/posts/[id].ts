@@ -42,7 +42,10 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
   delete body.id;
 
   if (body.content) {
-    body.content = sanitizeHtml(body.content);
+    body.content = sanitizeHtml(body.content, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+      allowIframeRelativeUrls: true,
+    });
   }
 
   const postId = params.id as string;
