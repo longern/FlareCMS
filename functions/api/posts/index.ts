@@ -1,4 +1,4 @@
-import { inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { labels, posts } from "../schema";
 import sanitizeHtml from "sanitize-html";
@@ -11,30 +11,52 @@ interface Env {
 }
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
-  const env = context.env;
+  const { request, env } = context;
   const db = drizzle(env.DB);
-  const items: (typeof posts.$inferSelect & { labels?: string[] })[] = await db
-    .select()
-    .from(posts)
-    .all();
+  const items = await (() => {
+    const q = new URL(request.url).searchParams.get("q");
+    if (!q) return db.select().from(posts).all();
+
+    const words = q.split(/\s+/);
+    const queryPrefixedLabels = words.filter((word) =>
+      word.startsWith("label:")
+    );
+    if (queryPrefixedLabels.length > 0) {
+      // Only support one label query
+      const queryLabel = queryPrefixedLabels[0].substring(6);
+      return db
+        .select()
+        .from(posts)
+        .innerJoin(
+          labels,
+          and(eq(posts.id, labels.postId), eq(labels.name, queryLabel))
+        )
+        .all()
+        .then((items) => items.map((item) => item.posts));
+    }
+
+    return db.select().from(posts).all();
+  })();
   items.reverse();
 
   const postIds = items.map((item) => item.id);
-  const postLabels = await db
-    .select({ name: labels.name, postId: labels.postId })
-    .from(labels)
-    .where(inArray(labels.postId, postIds))
-    .all();
+  const postLabels = postIds.length
+    ? await db
+        .select({ name: labels.name, postId: labels.postId })
+        .from(labels)
+        .where(inArray(labels.postId, postIds))
+        .all()
+    : [];
   const postLabelsMap = postLabels.reduce((map, label) => {
     if (!map[label.postId]) map[label.postId] = [];
     map[label.postId].push(label.name);
     return map;
   }, {} as Record<string, string[]>);
-  items.forEach((item) => {
-    item.labels = postLabelsMap[item.id] || [];
+  const result = items.map((item) => {
+    return Object.assign(item, { labels: postLabelsMap[item.id] || [] });
   });
 
-  return Response.json({ items });
+  return Response.json({ items: result });
 };
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {

@@ -7,19 +7,23 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 
 import { Post, PostCard } from "./PostDetail";
 
 function App() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const params = useParams<{ label: string }>();
 
   useEffect(() => {
-    fetch("/api/posts")
+    const request = params.label
+      ? fetch(`/api/posts?q=label:${params.label}`)
+      : fetch("/api/posts");
+    request
       .then((response) => response.json() as Promise<{ items: Post[] }>)
       .then((body) => setPosts(body.items));
-  }, []);
+  }, [params.label]);
 
   return (
     <div className="App">
