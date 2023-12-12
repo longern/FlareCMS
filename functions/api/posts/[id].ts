@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/d1";
 import { labels, posts } from "../schema";
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
 import { basicAuthenication } from "../auth";
 
@@ -29,6 +29,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
 export const onRequestPatch: PagesFunction<Env> = async (context) => {
   const { request, env, params } = context;
+  const postId = params.id as string;
 
   if (!request.headers.get("Authorization") || !basicAuthenication(context)) {
     return new Response("Unauthorized", {
@@ -38,7 +39,8 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
   }
 
   const db = drizzle(env.DB);
-  const body: typeof posts.$inferInsert = await request.json();
+  const body: typeof posts.$inferInsert & { labels?: string[] } =
+    await request.json();
   delete body.id;
 
   if (body.content) {
@@ -48,7 +50,35 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
     });
   }
 
-  const postId = params.id as string;
+  if (body.labels) {
+    const postLabels: string[] = body.labels || [];
+    delete body.labels;
+    const currentLabels = await db
+      .select({ name: labels.name })
+      .from(labels)
+      .where(eq(labels.postId, postId))
+      .all()
+      .then((items) => items.map((item) => item.name));
+    const newLabels = postLabels.filter(
+      (label) => !currentLabels.includes(label)
+    );
+    const deleteLabels = currentLabels.filter(
+      (current) => !postLabels.includes(current)
+    );
+    if (newLabels.length > 0)
+      await db
+        .insert(labels)
+        .values(newLabels.map((label) => ({ postId, name: label })))
+        .execute();
+    if (deleteLabels.length > 0)
+      await db
+        .delete(labels)
+        .where(
+          and(eq(labels.postId, postId), inArray(labels.name, deleteLabels))
+        )
+        .execute();
+  }
+
   const result = await db
     .update(posts)
     .set(body)

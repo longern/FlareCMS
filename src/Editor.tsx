@@ -8,10 +8,13 @@ import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
+import type { Post } from "./PostDetail";
 
 function Editor() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [labels, setLabels] = useState<string[]>([]);
+
   const [uploading, setUploading] = useState(false);
   const { id } = useParams<{ id: string }>();
   const quill = React.useRef<ReactQuill | null>(null);
@@ -28,7 +31,7 @@ function Editor() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, content }),
+        body: JSON.stringify({ title, content, labels }),
       })
         .then((res) => res.json())
         .then(() => navigate("/"));
@@ -39,7 +42,7 @@ function Editor() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, content }),
+        body: JSON.stringify({ title, content, labels }),
       })
         .then((res) => res.json())
         .then(() => navigate(`/posts/${id}`));
@@ -80,10 +83,11 @@ function Editor() {
 
     if (id === "new") return;
     fetch(`/api/posts/${id}`)
-      .then((res) => res.json() as Promise<{ title: string; content: string }>)
+      .then((res) => res.json() as Promise<Post>)
       .then((res) => {
         setTitle(res.title);
         setContent(res.content);
+        setLabels(res.labels);
       });
   }, [id]);
 
@@ -130,6 +134,19 @@ function Editor() {
           autoComplete="off"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          sx={{ mb: 1 }}
+        />
+        <TextField
+          fullWidth
+          label="Labels"
+          variant="standard"
+          size="small"
+          autoComplete="off"
+          value={labels.join(",")}
+          onChange={(e) =>
+            setLabels(e.target.value.split(",").map((s) => s.trim()))
+          }
+          sx={{ mb: 1 }}
         />
         <ReactQuill
           ref={quill}
