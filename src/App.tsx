@@ -1,19 +1,64 @@
 import React, { useEffect, useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Container from "@mui/material/Container";
-import IconButton from "@mui/material/IconButton";
+import {
+  AppBar,
+  Breadcrumbs,
+  Container,
+  IconButton,
+  Menu,
+  MenuItem,
+  Link,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import { Link as RouterLink, useParams } from "react-router-dom";
 
 import { Post, PostCard } from "./PostDetail";
 
+function BlogAppBar() {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  return (
+    <AppBar position="sticky">
+      <Toolbar>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          {process.env.REACT_APP_SITE_NAME}
+        </Typography>
+        <IconButton
+          size="large"
+          edge="end"
+          color="inherit"
+          aria-label="menu"
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Menu
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={() => setAnchorEl(null)}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+        >
+          <MenuItem component={RouterLink} to="/">
+            Home
+          </MenuItem>
+          <MenuItem component={RouterLink} to="/about">
+            About
+          </MenuItem>
+          <MenuItem component={RouterLink} to="/posts/edit/new">
+            New Post
+          </MenuItem>
+        </Menu>
+      </Toolbar>
+    </AppBar>
+  );
+}
+
 function App() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const params = useParams<{ label: string }>();
 
   useEffect(() => {
@@ -27,42 +72,16 @@ function App() {
 
   return (
     <div className="App">
-      <AppBar position="sticky">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {process.env.REACT_APP_SITE_NAME}
-          </Typography>
-          <IconButton
-            size="large"
-            edge="end"
-            color="inherit"
-            aria-label="menu"
-            onClick={(e) => setAnchorEl(e.currentTarget)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Menu
-            open={Boolean(anchorEl)}
-            anchorEl={anchorEl}
-            onClose={() => setAnchorEl(null)}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-          >
-            <MenuItem component={RouterLink} to="/">
-              Home
-            </MenuItem>
-            <MenuItem component={RouterLink} to="/about">
-              About
-            </MenuItem>
-            <MenuItem component={RouterLink} to="/posts/edit/new">
-              New Post
-            </MenuItem>
-          </Menu>
-        </Toolbar>
-      </AppBar>
+      <BlogAppBar />
       <Container maxWidth="md" sx={{ marginTop: "1rem" }}>
+        {params.label && (
+          <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: "1rem" }}>
+            <Link component={RouterLink} to="/">
+              Home
+            </Link>
+            <Typography color="text.primary">{params.label}</Typography>
+          </Breadcrumbs>
+        )}
         {posts.map((post) => (
           <PostCard key={post.id} post={post} to={`/posts/${post.id}`} />
         ))}
