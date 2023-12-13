@@ -10,10 +10,10 @@ export const posts = sqliteTable("posts", {
   id: text("id").primaryKey().notNull(),
   published: integer("published")
     .notNull()
-    .default(sql`(CAST(unixepoch() * 1000 AS INTEGER))`),
+    .default(sql`(ROUND(unixepoch('subsec') * 1000))`),
   updated: integer("updated")
     .notNull()
-    .default(sql`(CAST(unixepoch() * 1000 AS INTEGER))`),
+    .default(sql`(ROUND(unixepoch('subsec') * 1000))`),
   title: text("title").notNull(),
   content: text("content").notNull(),
 });
@@ -42,7 +42,7 @@ export const replies = sqliteTable(
     id: text("id").primaryKey(),
     published: integer("published")
       .notNull()
-      .default(sql`(CAST(unixepoch() * 1000 AS INTEGER))`),
+      .default(sql`(ROUND(unixepoch('subsec') * 1000))`),
     content: text("content").notNull(),
     postId: text("postId")
       .notNull()
