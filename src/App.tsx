@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Breadcrumbs,
+  CircularProgress,
   Container,
   IconButton,
   Menu,
@@ -9,6 +10,7 @@ import {
   Link,
   Toolbar,
   Typography,
+  Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link as RouterLink, useParams } from "react-router-dom";
@@ -58,7 +60,8 @@ function BlogAppBar() {
 }
 
 function App() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const params = useParams<{ label: string }>();
 
   useEffect(() => {
@@ -67,7 +70,8 @@ function App() {
       : fetch("/api/posts");
     request
       .then((response) => response.json() as Promise<{ items: Post[] }>)
-      .then((body) => setPosts(body.items));
+      .then((body) => setPosts(body.items))
+      .catch((err) => setError(err.message));
   }, [params.label]);
 
   return (
@@ -82,9 +86,21 @@ function App() {
             <Typography color="text.primary">{params.label}</Typography>
           </Breadcrumbs>
         )}
-        {posts.map((post) => (
-          <PostCard key={post.id} post={post} to={`/posts/${post.id}`} />
-        ))}
+        {error ? (
+          <code>{error}</code>
+        ) : !posts ? (
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <CircularProgress />
+          </Box>
+        ) : posts.length === 0 ? (
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            No posts found
+          </Typography>
+        ) : (
+          posts.map((post) => (
+            <PostCard key={post.id} post={post} to={`/posts/${post.id}`} />
+          ))
+        )}
       </Container>
     </div>
   );

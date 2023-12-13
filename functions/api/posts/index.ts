@@ -13,7 +13,7 @@ interface Env {
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
   const db = drizzle(env.DB);
-  const items = await (() => {
+  const items = await (async () => {
     const q = new URL(request.url).searchParams.get("q");
     if (!q) return db.select().from(posts).all();
 
@@ -24,15 +24,15 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     if (queryPrefixedLabels.length > 0) {
       // Only support one label query
       const queryLabel = queryPrefixedLabels[0].substring(6);
-      return db
+      const items = await db
         .select()
         .from(posts)
         .innerJoin(
           labels,
           and(eq(posts.id, labels.postId), eq(labels.name, queryLabel))
         )
-        .all()
-        .then((items) => items.map((item) => item.posts));
+        .all();
+      return items.map((item) => item.posts);
     }
 
     return db.select().from(posts).all();

@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
-import AppBar from "@mui/material/AppBar";
+import {
+  AppBar,
+  Box,
+  Card,
+  CardContent,
+  CircularProgress,
+  Container,
+  IconButton,
+  Link,
+  Toolbar,
+  Typography,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import ArrowBack from "@mui/icons-material/ArrowBack";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Container from "@mui/material/Container";
-import IconButton from "@mui/material/IconButton";
-import Link from "@mui/material/Link";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import { useTheme } from "@mui/material/styles";
 import {
   Link as RouterLink,
@@ -144,7 +148,15 @@ function PostDetail() {
         </Toolbar>
       </AppBar>
       <Container maxWidth="md" sx={{ marginTop: "1rem" }}>
-        {error || (post && <PostCard post={post} />)}
+        {error ? (
+          <code>{error}</code>
+        ) : !post ? (
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <PostCard post={post} />
+        )}
       </Container>
     </div>
   );
