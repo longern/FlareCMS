@@ -16,6 +16,7 @@ import {
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useTheme } from "@mui/material/styles";
+import { DateTime } from "luxon";
 import {
   Link as RouterLink,
   useLocation,
@@ -27,8 +28,8 @@ export interface Post {
   id: string;
   title: string;
   content: string;
-  published: string;
-  updated: string;
+  published: number;
+  updated: number;
   labels?: string[];
 }
 
@@ -87,7 +88,7 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
           )}
         </Typography>
         <Typography variant="subtitle2" color="text.secondary">
-          {new Date(post.published).toLocaleString()}
+          {DateTime.fromMillis(post.published).toRelative()}
         </Typography>
         <Typography
           variant="body1"
