@@ -54,3 +54,11 @@ export const replies = sqliteTable(
     };
   }
 );
+
+export const options = sqliteTable(
+  "options",
+  {
+    key: text("key").primaryKey().notNull(),
+    value: text("value").notNull(),
+  },
+);
