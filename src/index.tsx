@@ -9,6 +9,17 @@ import App from "./App";
 import Editor from "./Editor";
 import PostDetail from "./PostDetail";
 
+fetch("/api/options")
+  .then(async (res) => {
+    const options: Record<string, string> = await res.json();
+    if (options["blogName"]) document.title = options["blogName"];
+    if (options["blogDescription"])
+      document
+        .querySelector('meta[name="description"]')
+        ?.setAttribute("content", options["blogDescription"]);
+  })
+  .catch(() => {});
+
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
