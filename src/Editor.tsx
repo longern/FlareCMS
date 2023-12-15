@@ -119,7 +119,7 @@ function Editor() {
         sx={{
           overflowY: "auto",
           mt: 2,
-          "& .ql-container": { border: "none", margin: "0 -12px" },
+          "& .ql-container.ql-snow": { border: "none", margin: "0 -12px" },
           "& .ql-editor": { minHeight: "12em" },
           "& .ql-editor.ql-blank::before": {
             color: theme.palette.text.disabled,

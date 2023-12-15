@@ -6,7 +6,6 @@ import GlobalStyles from "@mui/material/GlobalStyles";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import App from "./App";
-import Editor from "./Editor";
 import PostDetail from "./PostDetail";
 
 fetch("/api/options")
@@ -51,7 +50,10 @@ const router = createBrowserRouter([
   },
   {
     path: "/posts/edit/:id",
-    element: <Editor />,
+    lazy: async () => {
+      const Component = (await import("./Editor")).default;
+      return { Component };
+    },
   },
 ]);
 
