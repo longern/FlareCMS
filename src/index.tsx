@@ -82,6 +82,13 @@ const router = createBrowserRouter([
           return { Component };
         },
       },
+      {
+        path: "/login",
+        lazy: async () => {
+          const Component = (await import("./Login")).default;
+          return { Component };
+        },
+      },
     ],
   },
 ]);

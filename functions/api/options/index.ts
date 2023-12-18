@@ -2,6 +2,7 @@ import { drizzle } from "drizzle-orm/d1";
 import { options } from "../schema";
 import { basicAuthenication } from "../auth";
 import { inArray, sql } from "drizzle-orm";
+import jwt from "@tsndr/cloudflare-worker-jwt";
 
 interface Env {
   DB: D1Database;
@@ -47,7 +48,16 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   }
 
   const db = drizzle(env.DB);
-  const body: typeof options.$inferInsert = await request.json();
+  const body: Record<string, string> = await request.json();
+
+  if (body.adminPassword) {
+    const password = body.adminPassword;
+    delete body.adminPassword;
+    const username = body.adminUsername;
+    if (username) {
+      body.adminPassword = await jwt.sign({ username }, password);
+    }
+  }
 
   const keysToDelete = Object.keys(body).filter((key) => body[key] === null);
   if (keysToDelete.length)
