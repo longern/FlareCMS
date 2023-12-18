@@ -45,6 +45,9 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
     if (!confirmed) return;
     fetch(`/api/posts/${post.id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     }).then(() => navigate("/"));
   }
 

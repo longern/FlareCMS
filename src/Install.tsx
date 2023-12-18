@@ -104,8 +104,10 @@ function StepCreateAdminAccount() {
       <Button
         variant="contained"
         color="primary"
+        size="large"
         fullWidth
         onClick={handleInstall}
+        sx={{ mt: 2 }}
       >
         Install
       </Button>

@@ -24,12 +24,19 @@ function Editor() {
   function handleSend() {
     if (!content) return;
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     if (id === "new") {
       setUploading(true);
       fetch("/api/posts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ title, content, labels }),
       })
@@ -41,6 +48,7 @@ function Editor() {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ title, content, labels }),
       })
@@ -61,6 +69,9 @@ function Editor() {
       fetch("/api/assets", {
         method: "POST",
         body: file,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       })
         .then((res) => res.json() as Promise<{ id: string }>)
         .then((res) => {

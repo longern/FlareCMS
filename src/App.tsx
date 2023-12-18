@@ -13,18 +13,23 @@ import {
   Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import {
+  Link as RouterLink,
+  useParams,
+  useRouteLoaderData,
+} from "react-router-dom";
 
 import { Post, PostCard } from "./PostDetail";
 
 function BlogAppBar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const loaderData = useRouteLoaderData("root") as { blogName?: string };
 
   return (
     <AppBar position="sticky">
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {process.env.REACT_APP_SITE_NAME}
+          {loaderData.blogName || "Blog"}
         </Typography>
         <IconButton
           size="large"
