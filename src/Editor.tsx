@@ -21,7 +21,7 @@ function Editor() {
   const navigate = useNavigate();
   const theme = useTheme();
 
-  function handleSend() {
+  async function handleSend() {
     if (!content) return;
 
     const token = localStorage.getItem("token");
@@ -30,30 +30,43 @@ function Editor() {
       return;
     }
 
-    if (id === "new") {
+    try {
       setUploading(true);
-      fetch("/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ title, content, labels }),
-      })
-        .then((res) => res.json())
-        .then(() => navigate("/"));
-    } else {
-      setUploading(true);
-      fetch(`/api/posts/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ title, content, labels }),
-      })
-        .then((res) => res.json())
-        .then(() => navigate(`/posts/${id}`));
+      if (id === "new") {
+        const res = await fetch("/api/posts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ title, content, labels }),
+        })
+        if (res.status === 401) {
+          navigate("/login");
+          return;
+        }
+        await res.json();
+        navigate("/");
+      } else {
+        const res = await fetch(`/api/posts/${id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ title, content, labels }),
+        });
+        if (res.status === 401) {
+          navigate("/login");
+          return;
+        }
+        await res.json();
+        navigate(`/posts/${id}`);
+      }
+    } catch (err) {
+      if (err instanceof Error) console.error(err.message);
+    } finally {
+      setUploading(false);
     }
   }
 

@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/d1";
 import { options } from "../schema";
-import { basicAuthenication } from "../auth";
+import { jwtAuthenication } from "../auth";
 import { inArray, sql } from "drizzle-orm";
 import jwt from "@tsndr/cloudflare-worker-jwt";
 
@@ -40,10 +40,10 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
 
-  if (!request.headers.get("Authorization") || !basicAuthenication(context)) {
-    return new Response("Unauthorized", {
+  if (!jwtAuthenication(context)) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { "WWW-Authenticate": "Basic" },
+      headers: { "Content-Type": "application/json" },
     });
   }
 

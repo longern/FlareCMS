@@ -2,7 +2,7 @@ import { and, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { labels, posts } from "../schema";
 import sanitizeHtml from "sanitize-html";
-import { basicAuthenication } from "../auth";
+import { jwtAuthenication } from "../auth";
 
 interface Env {
   DB: D1Database;
@@ -62,10 +62,10 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
 
-  if (!request.headers.get("Authorization") || !basicAuthenication(context)) {
-    return new Response("Unauthorized", {
+  if (!jwtAuthenication(context)) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { "WWW-Authenticate": "Basic" },
+      headers: { "Content-Type": "application/json" },
     });
   }
 
