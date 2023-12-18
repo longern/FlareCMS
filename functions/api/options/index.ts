@@ -76,5 +76,5 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         set: { value: sql`EXCLUDED.value` },
       });
 
-  return new Response(null, { status: 204 });
+  return new Response(JSON.stringify({ success: true }), { status: 200 });
 };

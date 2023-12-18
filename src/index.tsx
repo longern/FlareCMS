@@ -58,11 +58,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <App />,
+        element: <App key="index" />,
       },
       {
         path: "/posts/label/:label",
-        element: <App />,
+        element: <App key="label" />,
       },
       {
         path: "/posts/:id",

@@ -10,9 +10,10 @@ import {
   Stepper,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { ContentCopy } from "@mui/icons-material";
-import { useRouteLoaderData } from "react-router-dom";
+import { useNavigate, useRouteLoaderData } from "react-router-dom";
 
 function StepCreaetSecret() {
   const [secret, setSecret] = useState("");
@@ -45,7 +46,7 @@ function StepCreaetSecret() {
           </IconButton>
         ),
       }}
-      helperText="Add this secret to CloudFlare Workers environment variables as SECRET."
+      helperText="Add this secret to CloudFlare Workers environment variables as SECRET. Redeploy your worker and refresh this page."
     />
   );
 }
@@ -54,9 +55,12 @@ function StepCreateAdminAccount() {
   const [blogName, setBlogName] = useState("");
   const [adminUsername, setAdminUsername] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const theme = useTheme();
 
-  function handleInstall() {
-    fetch("/api/options", {
+  async function handleInstall() {
+    const res = await fetch("/api/install", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,9 +70,13 @@ function StepCreateAdminAccount() {
         adminUsername,
         adminPassword,
       }),
-    }).then(() => {
-      window.location.href = "/";
     });
+    const json: { error: string } | { success: boolean } = await res.json();
+    if ("error" in json) {
+      setError(json.error);
+      return;
+    }
+    navigate("/");
   }
 
   return (
@@ -111,6 +119,11 @@ function StepCreateAdminAccount() {
       >
         Install
       </Button>
+      {error && (
+        <Typography variant="body2" sx={{ color: theme.palette.error.main }}>
+          {error}
+        </Typography>
+      )}
     </>
   );
 }
