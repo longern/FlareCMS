@@ -1,20 +1,33 @@
 import { drizzle } from "drizzle-orm/d1";
 import { options } from "../schema";
 import { basicAuthenication } from "../auth";
-import { inArray } from "drizzle-orm";
+import { inArray, sql } from "drizzle-orm";
 
 interface Env {
   DB: D1Database;
+  SECRET?: string;
 }
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   const { env } = context;
+
+  if (!env.SECRET) {
+    return new Response(JSON.stringify({ error: "Secret not set" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   const db = drizzle(env.DB);
   const items = await db.select().from(options).all();
   const result: Record<string, string> = {};
   items.forEach((item) => {
     result[item.key] = item.value;
   });
+
+  if (typeof result.adminPassword === "string")
+    result.adminPassword = "********";
+
   return Response.json(result, {
     headers: {
       "Cache-Control": "public, max-age=3600",
@@ -37,12 +50,21 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const body: typeof options.$inferInsert = await request.json();
 
   const keysToDelete = Object.keys(body).filter((key) => body[key] === null);
-  await db.delete(options).where(inArray(options.key, keysToDelete));
+  if (keysToDelete.length)
+    await db.delete(options).where(inArray(options.key, keysToDelete));
   keysToDelete.forEach((key) => delete body[key]);
-  await db
-    .insert(options)
-    .values(body)
-    .onConflictDoUpdate({ target: [options.key], set: body });
+  const optionsArray = Object.keys(body).map((key) => ({
+    key,
+    value: body[key],
+  }));
+  if (optionsArray.length)
+    await db
+      .insert(options)
+      .values(optionsArray)
+      .onConflictDoUpdate({
+        target: [options.key],
+        set: { value: sql`EXCLUDED.value` },
+      });
 
   return new Response(null, { status: 204 });
 };
