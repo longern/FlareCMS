@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/d1";
-import { labels, posts } from "../schema";
+import { labels, posts, replies } from "../schema";
 import { and, eq, inArray } from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
 import { jwtAuthenication } from "../auth";
@@ -23,6 +23,13 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       .where(eq(labels.postId, item.id))
       .all();
     item.labels = postLabels.map((label) => label.name);
+
+    item.replies = await db
+      .select()
+      .from(replies)
+      .where(eq(replies.postId, item.id))
+      .all();
+
     return Response.json(item);
   }
 };

@@ -31,6 +31,11 @@ export interface Post {
   published: number;
   updated: number;
   labels?: string[];
+  replies?: {
+    id: string;
+    content: string;
+    published: number;
+  }[];
 }
 
 export function PostCard({ post, to }: { post: Post; to?: string }) {
