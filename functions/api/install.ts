@@ -40,6 +40,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     .insert(options)
     .values([
       { key: "blogName", value: body.blogName },
+      { key: "blogPublished", value: new Date().toISOString() },
       { key: "adminUsername", value: body.adminUsername },
       { key: "adminPassword", value: jwtToken },
     ])

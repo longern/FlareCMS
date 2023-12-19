@@ -86,6 +86,8 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
         .execute();
   }
 
+  body.updated = new Date().getTime();
+
   const result = await db
     .update(posts)
     .set(body)
