@@ -12,6 +12,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import App from "./App";
 import PostDetail from "./PostDetail";
+import adminRouter from "./admin/index";
 
 const darkTheme = createTheme({
   palette: {
@@ -34,60 +35,64 @@ const router = createBrowserRouter([
     path: "/",
     element: <Outlet />,
     id: "root",
-    loader: ({ request }) =>
-      fetch("/api/options")
-        .then(async (res) => {
-          const options: Record<string, string> = await res.json();
+    async loader({ request }) {
+      try {
+        const res = await fetch("/api/options");
+        const options: Record<string, string> = await res.json();
 
-          if (
-            options["error"] === "Secret not set" &&
-            new URL(request.url).pathname !== "/install"
-          )
-            return redirect("/install");
+        if (
+          options["error"] === "Secret not set" &&
+          new URL(request.url).pathname !== "/install"
+        )
+          return redirect("/install");
 
-          if (options["blogName"]) document.title = options["blogName"];
-          if (options["blogDescription"])
-            document
-              .querySelector('meta[name="description"]')
-              ?.setAttribute("content", options["blogDescription"]);
-          return options;
-        })
-        .catch((res) => {
-          return { error: res };
-        }),
+        if (options["blogName"]) document.title = options["blogName"];
+        if (options["blogDescription"])
+          document
+            .querySelector('meta[name="description"]')
+            ?.setAttribute("content", options["blogDescription"]);
+        return options;
+      } catch (err) {
+        return { error: err.message };
+      }
+    },
     children: [
       {
-        path: "/",
+        path: "",
         element: <App key="index" />,
       },
       {
-        path: "/posts/label/:label",
+        path: "posts/label/:label",
         element: <App key="label" />,
       },
       {
-        path: "/posts/:id",
+        path: "posts/:id",
         element: <PostDetail />,
       },
       {
-        path: "/posts/edit/:id",
+        path: "posts/edit/:id",
         lazy: async () => {
           const Component = (await import("./Editor")).default;
           return { Component };
         },
       },
       {
-        path: "/install",
+        path: "install",
         lazy: async () => {
           const Component = (await import("./Install")).default;
           return { Component };
         },
       },
       {
-        path: "/login",
+        path: "login",
         lazy: async () => {
           const Component = (await import("./Login")).default;
           return { Component };
         },
+      },
+      {
+        path: "admin",
+        children: adminRouter,
       },
     ],
   },

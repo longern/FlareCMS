@@ -58,6 +58,9 @@ function BlogAppBar() {
           <MenuItem component={RouterLink} to="/posts/edit/new">
             New Post
           </MenuItem>
+          <MenuItem component={RouterLink} to="/admin">
+            Admin Panel
+          </MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>
