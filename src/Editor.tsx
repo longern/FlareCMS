@@ -142,6 +142,7 @@ function Editor() {
       <Container
         sx={{
           overflowY: "auto",
+          flexShrink: 0,
           mt: 2,
           "& .ql-container.ql-snow": { border: "none", margin: "0 -12px" },
           "& .ql-editor": { minHeight: "12em" },

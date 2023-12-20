@@ -88,14 +88,14 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
       <CardContent>
         <Typography variant="h5" component="h2" mb={1}>
           {to ? (
-            <Link component={RouterLink} to={to}>
+            <Link component={RouterLink} to={to} underline="hover">
               {post.title}
             </Link>
           ) : (
             post.title
           )}
         </Typography>
-        <Typography variant="subtitle2" color="text.secondary">
+        <Typography variant="subtitle2" component="span" color="text.secondary">
           {DateTime.fromMillis(post.published).toRelative()}
         </Typography>
         <Typography
@@ -109,12 +109,13 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
           }}
         />
         {post.labels && post.labels.length > 0 && (
-          <Typography variant="subtitle2" color="text.secondary">
+          <Typography variant="body2" component="div" color="text.secondary">
             {post.labels.map((label) => (
               <Link
                 key={label}
                 component={RouterLink}
                 to={`/posts/label/${label}`}
+                underline="hover"
                 sx={{ marginRight: "0.5rem" }}
               >
                 {`#${label}`}
