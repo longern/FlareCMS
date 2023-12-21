@@ -4,6 +4,7 @@ import {
   CardContent,
   CircularProgress,
   Container,
+  Fab,
   IconButton,
   Link,
   Menu,
@@ -12,6 +13,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import React, { useCallback, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
@@ -116,7 +118,10 @@ function Posts() {
           horizontal: "left",
         }}
       >
-        <MenuItem component={RouterLink} to={`/admin/posts/${activePost?.rowid}`}>
+        <MenuItem
+          component={RouterLink}
+          to={`/admin/posts/${activePost?.rowid}`}
+        >
           Edit
         </MenuItem>
         <MenuItem
@@ -126,6 +131,18 @@ function Posts() {
           Delete
         </MenuItem>
       </Menu>
+      <Fab
+        color="primary"
+        component={RouterLink}
+        to="/admin/posts/new"
+        sx={{
+          position: "fixed",
+          bottom: theme.spacing(4),
+          right: theme.spacing(4),
+        }}
+      >
+        <AddIcon />
+      </Fab>
     </Container>
   );
 }

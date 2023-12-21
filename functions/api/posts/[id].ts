@@ -21,21 +21,24 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   if (items.length === 0) {
     return Response.json({ error: "Not found" }, { status: 404 });
   } else {
-    const item: Record<string, any> = items[0];
+    const item = items[0];
+
     const postLabels = await db
       .select({ name: labels.name })
       .from(labels)
-      .where(eq(labels.postId, item.id))
+      .where(eq(labels.postId, item.rowid))
       .all();
-    item.labels = postLabels.map((label) => label.name);
+    const itemLabels = postLabels.map((label) => label.name);
 
-    item.replies = await db
+    const itemReplies = await db
       .select()
       .from(replies)
-      .where(eq(replies.postId, item.id))
+      .where(eq(replies.postId, item.rowid))
       .all();
 
-    return Response.json(item);
+    const result = { ...item, labels: itemLabels, replies: itemReplies };
+
+    return Response.json(result);
   }
 };
 

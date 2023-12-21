@@ -52,11 +52,8 @@ function BlogAppBar() {
           <MenuItem component={RouterLink} to="/">
             Home
           </MenuItem>
-          <MenuItem component={RouterLink} to="/about">
+          <MenuItem component={RouterLink} to="/posts/label/about">
             About
-          </MenuItem>
-          <MenuItem component={RouterLink} to="/posts/edit/new">
-            New Post
           </MenuItem>
           <MenuItem component={RouterLink} to="/admin">
             Admin Panel
