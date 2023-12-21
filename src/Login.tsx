@@ -1,10 +1,18 @@
 import React, { useState } from "react";
-import { Button, Card, CardContent, Container, TextField } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardContent,
+  Container,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   async function handleLogin() {
@@ -24,7 +32,7 @@ function Login() {
       localStorage.setItem("token", json.token);
       navigate("/");
     } catch (err) {
-      console.error(err);
+      setError(err.message);
     }
   }
 
@@ -67,6 +75,11 @@ function Login() {
             >
               Login
             </Button>
+            {error && (
+              <Typography color="error" sx={{ mt: 2 }}>
+                {error}
+              </Typography>
+            )}
           </form>
         </CardContent>
       </Card>
