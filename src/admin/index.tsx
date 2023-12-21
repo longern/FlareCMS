@@ -20,6 +20,13 @@ const router: RouteObject[] = [
         element: <Posts />,
       },
       {
+        path: "posts/:id",
+        lazy: async () => {
+          const Component = (await import("./Editor")).default;
+          return { Component };
+        },
+      },
+      {
         path: "settings",
         element: <Settings />,
       }

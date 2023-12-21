@@ -8,7 +8,8 @@ import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
-import type { Post } from "./PostDetail";
+
+import type { Post } from "../PostDetail";
 
 function Editor() {
   const [title, setTitle] = useState("");
@@ -40,7 +41,7 @@ function Editor() {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ title, content, labels }),
-        })
+        });
         if (res.status === 401) {
           navigate("/login");
           return;
@@ -124,7 +125,12 @@ function Editor() {
       }}
     >
       <Toolbar variant="dense" disableGutters>
-        <IconButton size="large" color="inherit" component={RouterLink} to="/">
+        <IconButton
+          size="large"
+          color="inherit"
+          component={RouterLink}
+          to="/admin/posts"
+        >
           <ArrowBack />
         </IconButton>
         <Box flexGrow={1} textAlign="center">

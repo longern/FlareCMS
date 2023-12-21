@@ -70,13 +70,6 @@ const router = createBrowserRouter([
         element: <PostDetail />,
       },
       {
-        path: "posts/edit/:id",
-        lazy: async () => {
-          const Component = (await import("./Editor")).default;
-          return { Component };
-        },
-      },
-      {
         path: "install",
         lazy: async () => {
           const Component = (await import("./Install")).default;

@@ -36,7 +36,7 @@ function Settings() {
   }
 
   return (
-    <Container maxWidth="sm" sx={{ py: 2 }}>
+    <Container sx={{ py: 2 }}>
       <Typography variant="h4">Settings</Typography>
       <form onSubmit={handleSubmit}>
         <TextField

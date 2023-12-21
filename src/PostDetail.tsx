@@ -75,7 +75,7 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
           horizontal: "left",
         }}
       >
-        <MenuItem component={RouterLink} to={`/posts/edit/${post.id}`}>
+        <MenuItem component={RouterLink} to={`/admin/posts/${post.id}`}>
           Edit
         </MenuItem>
         <MenuItem
