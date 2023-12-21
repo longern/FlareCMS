@@ -16,20 +16,20 @@ import MenuIcon from "@mui/icons-material/Menu";
 import {
   Link as RouterLink,
   useParams,
-  useRouteLoaderData,
 } from "react-router-dom";
 
 import { Post, PostCard } from "./PostDetail";
+import { useBlogOptions } from "./hooks";
 
 function BlogAppBar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const loaderData = useRouteLoaderData("root") as { blogName?: string };
+  const blogOptions = useBlogOptions();
 
   return (
     <AppBar position="sticky">
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {loaderData.blogName || "Blog"}
+          {blogOptions.blogName || "Blog"}
         </Typography>
         <IconButton
           size="large"
@@ -70,9 +70,14 @@ function App() {
   const params = useParams<{ label: string }>();
 
   useEffect(() => {
+    const searchParams = new URLSearchParams({
+      type: "post",
+      status: "publish",
+      orderBy: "published",
+    });
     const request = params.label
-      ? fetch(`/api/posts?q=label:${params.label}`)
-      : fetch("/api/posts");
+      ? fetch(`/api/posts/search?q=label:${params.label}`)
+      : fetch(`/api/posts?${searchParams}`);
     request
       .then((response) => response.json() as Promise<{ items: Post[] }>)
       .then((body) => setPosts(body.items))

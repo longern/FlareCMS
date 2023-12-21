@@ -23,6 +23,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
+import { useBlogOptions } from "./hooks";
 
 export interface Post {
   rowid: number;
@@ -134,6 +135,8 @@ function PostDetail() {
   const location = useLocation();
   const { id } = useParams<{ id: string }>();
 
+  const blogOptions = useBlogOptions();
+
   useEffect(() => {
     fetch(`/api/posts/${id}`)
       .then((response) => response.json() as Promise<Post | { error: string }>)
@@ -155,6 +158,9 @@ function PostDetail() {
           >
             <ArrowBack />
           </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            {blogOptions.blogName}
+          </Typography>
         </Toolbar>
       </AppBar>
       <Container maxWidth="md" sx={{ marginTop: "1rem" }}>

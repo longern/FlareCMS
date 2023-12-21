@@ -11,8 +11,11 @@ export const posts = sqliteTable(
     updated: integer("updated")
       .notNull()
       .default(sql`(ROUND(unixepoch('subsec') * 1000))`),
-    type: text("type").notNull().default("post"),
-    status: text("status").notNull().default("publish"),
+    type: text("type").$type<"post" | "page">().notNull().default("post"),
+    status: text("status")
+      .$type<"publish" | "draft">()
+      .notNull()
+      .default("publish"),
     title: text("title").notNull(),
     content: text("content").notNull(),
   },

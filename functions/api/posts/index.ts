@@ -1,4 +1,4 @@
-import { and, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { labels, posts } from "../schema";
 import sanitizeHtml from "sanitize-html";
@@ -13,31 +13,21 @@ interface Env {
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
   const db = drizzle(env.DB);
-  const items = await (async () => {
-    const q = new URL(request.url).searchParams.get("q");
-    if (!q) return db.select().from(posts).all();
+  const searchParams = new URL(request.url).searchParams;
+  const baseQuery = db.select().from(posts);
 
-    const words = q.split(/\s+/);
-    const queryPrefixedLabels = words.filter((word) =>
-      word.startsWith("label:")
-    );
-    if (queryPrefixedLabels.length > 0) {
-      // Only support one label query
-      const queryLabel = queryPrefixedLabels[0].substring(6);
-      const items = await db
-        .select()
-        .from(posts)
-        .innerJoin(
-          labels,
-          and(eq(posts.rowid, labels.postId), eq(labels.name, queryLabel))
-        )
-        .all();
-      return items.map((item) => item.posts);
-    }
+  const conditions = [eq(sql`1`, 1)];
 
-    return db.select().from(posts).all();
-  })();
-  items.reverse();
+  const type = searchParams.get("type") as "post" | "page";
+  if (type) conditions.push(eq(posts.type, type));
+
+  const status = searchParams.get("status") as "publish" | "draft";
+  if (status) conditions.push(eq(posts.status, status));
+
+  const items = await baseQuery
+    .where(and(...conditions))
+    .orderBy(desc(posts.published))
+    .all();
 
   const postIds = items.map((item) => item.rowid);
   const postLabels = postIds.length
