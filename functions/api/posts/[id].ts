@@ -10,9 +10,14 @@ interface Env {
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   const { env, params } = context;
-  const key = params.id as string;
+  const key = parseInt(params.id as string);
+
+  if (isNaN(key)) {
+    return Response.json({ error: "Invalid ID" }, { status: 400 });
+  }
+
   const db = drizzle(env.DB);
-  const items = await db.select().from(posts).where(eq(posts.id, key));
+  const items = await db.select().from(posts).where(eq(posts.rowid, key));
   if (items.length === 0) {
     return Response.json({ error: "Not found" }, { status: 404 });
   } else {
@@ -36,7 +41,6 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
 export const onRequestPatch: PagesFunction<Env> = async (context) => {
   const { request, env, params } = context;
-  const postId = params.id as string;
 
   if (!jwtAuthenication(context)) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -45,10 +49,15 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
     });
   }
 
+  const postId = parseInt(params.id as string);
+  if (isNaN(postId)) {
+    return Response.json({ error: "Invalid ID" }, { status: 400 });
+  }
+
   const db = drizzle(env.DB);
   const body: typeof posts.$inferInsert & { labels?: string[] } =
     await request.json();
-  delete body.id;
+  delete body.rowid;
 
   if (body.content) {
     body.content = sanitizeHtml(body.content, {
@@ -91,7 +100,7 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
   const result = await db
     .update(posts)
     .set(body)
-    .where(eq(posts.id, postId))
+    .where(eq(posts.rowid, postId))
     .execute();
   if (result.success) {
     return Response.json(body);
@@ -101,7 +110,7 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
 };
 
 export const onRequestDelete: PagesFunction<Env> = async (context) => {
-  const { request, env, params } = context;
+  const { env, params } = context;
 
   if (!jwtAuthenication(context)) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -110,9 +119,13 @@ export const onRequestDelete: PagesFunction<Env> = async (context) => {
     });
   }
 
-  const key = params.id as string;
+  const key = parseInt(params.id as string);
+  if (isNaN(key)) {
+    return Response.json({ error: "Invalid ID" }, { status: 400 });
+  }
+
   const db = drizzle(env.DB);
-  const result = await db.delete(posts).where(eq(posts.id, key)).execute();
+  const result = await db.delete(posts).where(eq(posts.rowid, key)).execute();
   if (result.success) {
     return new Response(null, { status: 204 });
   } else {

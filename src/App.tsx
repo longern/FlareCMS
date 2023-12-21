@@ -106,7 +106,7 @@ function App() {
           </Typography>
         ) : (
           posts.map((post) => (
-            <PostCard key={post.id} post={post} to={`/posts/${post.id}`} />
+            <PostCard key={post.rowid} post={post} to={`/posts/${post.rowid}`} />
           ))
         )}
       </Container>

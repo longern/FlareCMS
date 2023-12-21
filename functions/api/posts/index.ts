@@ -29,7 +29,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
         .from(posts)
         .innerJoin(
           labels,
-          and(eq(posts.id, labels.postId), eq(labels.name, queryLabel))
+          and(eq(posts.rowid, labels.postId), eq(labels.name, queryLabel))
         )
         .all();
       return items.map((item) => item.posts);
@@ -39,7 +39,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   })();
   items.reverse();
 
-  const postIds = items.map((item) => item.id);
+  const postIds = items.map((item) => item.rowid);
   const postLabels = postIds.length
     ? await db
         .select({ name: labels.name, postId: labels.postId })
@@ -53,7 +53,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     return map;
   }, {} as Record<string, string[]>);
   const result = items.map((item) => {
-    return Object.assign(item, { labels: postLabelsMap[item.id] || [] });
+    return Object.assign(item, { labels: postLabelsMap[item.rowid] || [] });
   });
 
   return Response.json({ items: result });
@@ -72,7 +72,6 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const db = drizzle(env.DB);
   const body: typeof posts.$inferInsert & { labels?: string[] } =
     await request.json();
-  body.id = crypto.randomUUID();
 
   if (body.content) {
     body.content = sanitizeHtml(body.content, {
@@ -84,16 +83,23 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const postLabels: string[] = body.labels || [];
   delete body.labels;
 
-  const result = await db.insert(posts).values(body).execute();
-  if (result.success) {
-    if (postLabels.length > 0) {
-      await db
-        .insert(labels)
-        .values(postLabels.map((name) => ({ postId: body.id, name })))
-        .execute();
+  try {
+    const result = await db
+      .insert(posts)
+      .values(body)
+      .returning({ rowid: posts.rowid })
+      .execute();
+    if (result.length) {
+      const post = result[0];
+      if (postLabels.length > 0) {
+        await db
+          .insert(labels)
+          .values(postLabels.map((name) => ({ postId: post.rowid, name })))
+          .execute();
+      }
+      return Response.json(body);
     }
-    return Response.json(body);
-  } else {
-    return Response.json({ error: result.error }, { status: 500 });
+  } catch (err) {
+    return Response.json({ error: err.message }, { status: 500 });
   }
 };

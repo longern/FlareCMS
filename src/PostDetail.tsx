@@ -25,14 +25,14 @@ import {
 } from "react-router-dom";
 
 export interface Post {
-  id: string;
+  rowid: number;
   title: string;
   content: string;
   published: number;
   updated: number;
   labels?: string[];
   replies?: {
-    id: string;
+    rowid: number;
     content: string;
     published: number;
   }[];
@@ -48,7 +48,7 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
       "Are you sure you want to delete this post?"
     );
     if (!confirmed) return;
-    fetch(`/api/posts/${post.id}`, {
+    fetch(`/api/posts/${post.rowid}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -75,7 +75,7 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
           horizontal: "left",
         }}
       >
-        <MenuItem component={RouterLink} to={`/admin/posts/${post.id}`}>
+        <MenuItem component={RouterLink} to={`/admin/posts/${post.rowid}`}>
           Edit
         </MenuItem>
         <MenuItem

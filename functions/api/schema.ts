@@ -1,29 +1,39 @@
 import { sql } from "drizzle-orm";
-import {
-  index,
-  integer,
-  sqliteTable,
-  text,
-} from "drizzle-orm/sqlite-core";
+import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export const posts = sqliteTable("posts", {
-  id: text("id").primaryKey().notNull(),
-  published: integer("published")
-    .notNull()
-    .default(sql`(ROUND(unixepoch('subsec') * 1000))`),
-  updated: integer("updated")
-    .notNull()
-    .default(sql`(ROUND(unixepoch('subsec') * 1000))`),
-  title: text("title").notNull(),
-  content: text("content").notNull(),
-});
+export const posts = sqliteTable(
+  "posts",
+  {
+    rowid: integer("rowid").primaryKey(),
+    published: integer("published")
+      .notNull()
+      .default(sql`(ROUND(unixepoch('subsec') * 1000))`),
+    updated: integer("updated")
+      .notNull()
+      .default(sql`(ROUND(unixepoch('subsec') * 1000))`),
+    type: text("type").notNull().default("post"),
+    status: text("status").notNull().default("publish"),
+    title: text("title").notNull(),
+    content: text("content").notNull(),
+  },
+  (table) => {
+    return {
+      typeStatusPublishedIdIdx: index("typeStatusPublishedIdIdx").on(
+        table.type,
+        table.status,
+        table.published,
+        table.rowid
+      ),
+    };
+  }
+);
 
 export const labels = sqliteTable(
   "labels",
   {
-    postId: text("postId")
+    postId: integer("postId")
       .notNull()
-      .references(() => posts.id, {
+      .references(() => posts.rowid, {
         onDelete: "cascade",
       }),
     name: text("name").notNull(),
@@ -39,14 +49,14 @@ export const labels = sqliteTable(
 export const replies = sqliteTable(
   "replies",
   {
-    id: text("id").primaryKey(),
+    rowid: integer("rowid").primaryKey(),
     published: integer("published")
       .notNull()
       .default(sql`(ROUND(unixepoch('subsec') * 1000))`),
     content: text("content").notNull(),
-    postId: text("postId")
+    postId: integer("postId")
       .notNull()
-      .references(() => posts.id, { onDelete: "cascade" }),
+      .references(() => posts.rowid, { onDelete: "cascade" }),
   },
   (table) => {
     return {
@@ -55,10 +65,7 @@ export const replies = sqliteTable(
   }
 );
 
-export const options = sqliteTable(
-  "options",
-  {
-    key: text("key").primaryKey().notNull(),
-    value: text("value").notNull(),
-  },
-);
+export const options = sqliteTable("options", {
+  key: text("key").primaryKey().notNull(),
+  value: text("value").notNull(),
+});

@@ -63,11 +63,11 @@ function Posts() {
         </Box>
       ) : (
         posts.map((post) => (
-          <Card key={post.id} sx={{ my: 2 }}>
+          <Card key={post.rowid} sx={{ my: 2 }}>
             <CardContent>
               <Link
                 component={RouterLink}
-                to={`/admin/posts/${post.id}`}
+                to={`/admin/posts/${post.rowid}`}
                 underline="none"
                 sx={{ "-webkit-tap-highlight-color": "transparent" }}
               >
@@ -116,7 +116,7 @@ function Posts() {
           horizontal: "left",
         }}
       >
-        <MenuItem component={RouterLink} to={`/admin/posts/${activePost?.id}`}>
+        <MenuItem component={RouterLink} to={`/admin/posts/${activePost?.rowid}`}>
           Edit
         </MenuItem>
         <MenuItem
