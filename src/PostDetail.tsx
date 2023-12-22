@@ -10,17 +10,12 @@ import {
   Link,
   Toolbar,
   Typography,
-  Menu,
-  MenuItem,
 } from "@mui/material";
 import ArrowBack from "@mui/icons-material/ArrowBack";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { useTheme } from "@mui/material/styles";
 import { DateTime } from "luxon";
 import {
   Link as RouterLink,
   useLocation,
-  useNavigate,
   useParams,
 } from "react-router-dom";
 import { useBlogOptions } from "./hooks";
@@ -40,52 +35,8 @@ export interface Post {
 }
 
 export function PostCard({ post, to }: { post: Post; to?: string }) {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const navigate = useNavigate();
-  const theme = useTheme();
-
-  function handleDelete() {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this post?"
-    );
-    if (!confirmed) return;
-    fetch(`/api/posts/${post.rowid}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then(() => navigate("/"));
-  }
-
   return (
     <Card sx={{ marginBottom: "1rem" }}>
-      <IconButton
-        size="small"
-        sx={{ float: "right" }}
-        aria-label="manage post"
-        onClick={(e) => setAnchorEl(e.currentTarget)}
-      >
-        <MoreHorizIcon />
-      </IconButton>
-      <Menu
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={() => setAnchorEl(null)}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-      >
-        <MenuItem component={RouterLink} to={`/admin/posts/${post.rowid}`}>
-          Edit
-        </MenuItem>
-        <MenuItem
-          onClick={handleDelete}
-          sx={{ color: theme.palette.error.main }}
-        >
-          Delete
-        </MenuItem>
-      </Menu>
       <CardContent>
         <Typography variant="h5" component="h2" mb={1}>
           {to ? (
@@ -104,6 +55,7 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
           component="div"
           dangerouslySetInnerHTML={{ __html: post.content }}
           sx={{
+            my: "2rem",
             "& img": {
               maxWidth: "100%",
             },
