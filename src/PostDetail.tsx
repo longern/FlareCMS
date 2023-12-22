@@ -13,11 +13,7 @@ import {
 } from "@mui/material";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import { DateTime } from "luxon";
-import {
-  Link as RouterLink,
-  useLocation,
-  useParams,
-} from "react-router-dom";
+import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
 import { useBlogOptions } from "./hooks";
 
 export interface Post {
@@ -47,7 +43,12 @@ export function PostCard({ post, to }: { post: Post; to?: string }) {
             post.title
           )}
         </Typography>
-        <Typography variant="subtitle2" component="span" color="text.secondary">
+        <Typography
+          variant="subtitle2"
+          component="span"
+          color="text.secondary"
+          title={new Date(post.published).toLocaleString()}
+        >
           {DateTime.fromMillis(post.published).toRelative()}
         </Typography>
         <Typography

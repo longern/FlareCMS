@@ -1,5 +1,5 @@
 import React from "react";
-import { RouteObject } from "react-router-dom";
+import { RouteObject, redirect } from "react-router-dom";
 
 import Layout from "./Layout";
 import Posts from "./Posts";
@@ -13,7 +13,7 @@ const router: RouteObject[] = [
     children: [
       {
         path: "",
-        element: <></>,
+        loader: () => redirect("/admin/posts"),
       },
       {
         path: "posts",

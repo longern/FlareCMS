@@ -81,6 +81,9 @@ function Sidebar() {
         <Collapse in={showPages} timeout="auto" unmountOnExit>
           <PageList />
         </Collapse>
+        <ListItemButton component={RouterLink} to="/admin">
+          <ListItemText primary="Admin" />
+        </ListItemButton>
       </List>
       <Divider />
       <Stack spacing={1} p={1}>
