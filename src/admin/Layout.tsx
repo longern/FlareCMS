@@ -12,10 +12,16 @@ import {
   Toolbar,
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
-import { Outlet, Link as RouterLink, useNavigate } from "react-router-dom";
+import {
+  Outlet,
+  Link as RouterLink,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 function Layout() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const { pathname } = useLocation();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -46,12 +52,20 @@ function Layout() {
         <Box sx={{ width: 250 }} onClick={() => setDrawerOpen(false)}>
           <List>
             <ListItem disablePadding>
-              <ListItemButton component={RouterLink} to="/admin/posts">
+              <ListItemButton
+                component={RouterLink}
+                to="/admin/posts"
+                selected={pathname === "/admin/posts"}
+              >
                 Posts
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton component={RouterLink} to="/admin/settings">
+              <ListItemButton
+                component={RouterLink}
+                to="/admin/settings"
+                selected={pathname === "/admin/settings"}
+              >
                 Settings
               </ListItemButton>
             </ListItem>
