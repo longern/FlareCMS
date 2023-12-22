@@ -5,60 +5,44 @@ import {
   CircularProgress,
   Container,
   IconButton,
-  Menu,
-  MenuItem,
   Link,
   Toolbar,
   Typography,
   Box,
+  Drawer,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import {
-  Link as RouterLink,
-  useParams,
-} from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 
 import { Post, PostCard } from "./PostDetail";
 import { useBlogOptions } from "./hooks";
+import Sidebar from "./Sidebar";
 
-function BlogAppBar() {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+function BlogAppBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const blogOptions = useBlogOptions();
 
   return (
-    <AppBar position="sticky">
+    <AppBar
+      position="fixed"
+      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    >
       <Toolbar>
+        {onMenuClick && (
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={onMenuClick}
+          >
+            <MenuIcon />
+          </IconButton>
+        )}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           {blogOptions.blogName || "Blog"}
         </Typography>
-        <IconButton
-          size="large"
-          edge="end"
-          color="inherit"
-          aria-label="menu"
-          onClick={(e) => setAnchorEl(e.currentTarget)}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Menu
-          open={Boolean(anchorEl)}
-          anchorEl={anchorEl}
-          onClose={() => setAnchorEl(null)}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-        >
-          <MenuItem component={RouterLink} to="/">
-            Home
-          </MenuItem>
-          <MenuItem component={RouterLink} to="/posts/label/about">
-            About
-          </MenuItem>
-          <MenuItem component={RouterLink} to="/admin">
-            Admin Panel
-          </MenuItem>
-        </Menu>
       </Toolbar>
     </AppBar>
   );
@@ -67,7 +51,11 @@ function BlogAppBar() {
 function App() {
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+
   const params = useParams<{ label: string }>();
+  const theme = useTheme();
+  const matchesLg = useMediaQuery(theme.breakpoints.up("lg"));
 
   useEffect(() => {
     const searchParams = new URLSearchParams({
@@ -86,8 +74,31 @@ function App() {
 
   return (
     <div className="App">
-      <BlogAppBar />
-      <Container maxWidth="md" sx={{ marginTop: "1rem" }}>
+      {matchesLg ? (
+        <Drawer variant="permanent" anchor="left">
+          <Box sx={{ width: 320 }}>
+            <Sidebar />
+          </Box>
+        </Drawer>
+      ) : (
+        <>
+          <BlogAppBar
+            onMenuClick={matchesLg ? null : () => setSidebarOpen(!sidebarOpen)}
+          />
+          <Drawer
+            open={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+            anchor="left"
+          >
+            <Box sx={{ width: 320 }}>
+              <Toolbar />
+              <Sidebar />
+            </Box>
+          </Drawer>
+          <Toolbar />
+        </>
+      )}
+      <Container maxWidth="md" sx={{ py: "1rem" }}>
         {params.label && (
           <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: "1rem" }}>
             <Link component={RouterLink} to="/">
@@ -108,7 +119,11 @@ function App() {
           </Typography>
         ) : (
           posts.map((post) => (
-            <PostCard key={post.rowid} post={post} to={`/posts/${post.rowid}`} />
+            <PostCard
+              key={post.rowid}
+              post={post}
+              to={`/posts/${post.rowid}`}
+            />
           ))
         )}
       </Container>
