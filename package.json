@@ -11,7 +11,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@tsndr/cloudflare-worker-jwt": "^2.3.2",
-    "drizzle-orm": "^0.29.0",
+    "drizzle-orm": "^0.29.1",
     "luxon": "^3.4.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

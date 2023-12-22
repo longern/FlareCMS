@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { count } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { labels } from "../schema";
 
@@ -17,11 +17,11 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   const db = drizzle(env.DB);
   const items = await db
-    .select({ name: labels.name, count: sql<number>`COUNT(*)` })
+    .select({ name: labels.name, count: count() })
     .from(labels)
     .groupBy(labels.name)
     .all();
-  items.reverse();
+  items.sort((a, b) => b.count - a.count);
 
   const response = Response.json(
     { items },

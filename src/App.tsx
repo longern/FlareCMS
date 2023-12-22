@@ -89,6 +89,7 @@ function App() {
             open={sidebarOpen}
             onClose={() => setSidebarOpen(false)}
             anchor="left"
+            keepMounted
           >
             <Box sx={{ width: 320 }}>
               <Toolbar />

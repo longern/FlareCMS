@@ -70,6 +70,10 @@ const router = createBrowserRouter([
         element: <PostDetail />,
       },
       {
+        path: "pages/:id",
+        element: <PostDetail />,
+      },
+      {
         path: "install",
         lazy: async () => {
           const Component = (await import("./Install")).default;

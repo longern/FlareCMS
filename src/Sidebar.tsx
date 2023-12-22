@@ -32,7 +32,7 @@ function PageList() {
   }, []);
 
   return (
-    <List disablePadding>
+    <List disablePadding sx={{ pl: 4 }}>
       {pages === null ? (
         <Box sx={{ display: "flex", justifyContent: "center", py: 1 }}>
           <CircularProgress />
@@ -78,7 +78,7 @@ function Sidebar() {
           <ListItemText primary="Pages" />
           {showPages ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-        <Collapse in={showPages} timeout="auto" unmountOnExit>
+        <Collapse in={showPages}>
           <PageList />
         </Collapse>
         <ListItemButton component={RouterLink} to="/admin">
