@@ -87,7 +87,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           .values(postLabels.map((name) => ({ postId: post.rowid, name })))
           .execute();
       }
-      return Response.json(body);
+      return Response.json(post);
     }
   } catch (err) {
     return Response.json({ error: err.message }, { status: 500 });

@@ -7,16 +7,21 @@ import {
   Fab,
   IconButton,
   Link,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   Stack,
   Tab,
   Tabs,
   Typography,
-  useTheme,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import {
+  Add as AddIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  MoreVert as MoreVertIcon,
+} from "@mui/icons-material";
 import React, { useCallback, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -31,7 +36,6 @@ function Posts({ type }: { type: "page" | "post" }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [activePost, setActivePost] = React.useState<Post | null>(null);
 
-  const theme = useTheme();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -102,7 +106,7 @@ function Posts({ type }: { type: "page" | "post" }) {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {post.title}
+                      {post.title || t("(Untitled)")}
                     </Typography>
                     <IconButton
                       size="small"
@@ -114,7 +118,7 @@ function Posts({ type }: { type: "page" | "post" }) {
                         setAnchorEl(e.currentTarget);
                       }}
                     >
-                      <MoreHorizIcon />
+                      <MoreVertIcon />
                     </IconButton>
                   </Stack>
                   <Typography variant="subtitle1" color="text.secondary">
@@ -136,18 +140,28 @@ function Posts({ type }: { type: "page" | "post" }) {
             vertical: "bottom",
             horizontal: "right",
           }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
         >
           <MenuItem
             component={RouterLink}
             to={`/admin/posts/${activePost?.rowid}`}
           >
-            {t("Edit")}
+            <ListItemIcon>
+              <EditIcon />
+            </ListItemIcon>
+            <ListItemText primary={t("Edit")}></ListItemText>
           </MenuItem>
           <MenuItem
             onClick={() => handleDelete(activePost)}
-            sx={{ color: theme.palette.error.main }}
+            sx={(theme) => ({ color: theme.palette.error.main })}
           >
-            {t("Delete")}
+            <ListItemIcon>
+              <DeleteIcon />
+            </ListItemIcon>
+            <ListItemText primary={t("Delete")}></ListItemText>
           </MenuItem>
         </Menu>
       </Container>
@@ -155,11 +169,11 @@ function Posts({ type }: { type: "page" | "post" }) {
         color="primary"
         component={RouterLink}
         to="/admin/posts/new"
-        sx={{
+        sx={(theme) => ({
           position: "fixed",
           bottom: theme.spacing(4),
           right: theme.spacing(4),
-        }}
+        })}
       >
         <AddIcon />
       </Fab>

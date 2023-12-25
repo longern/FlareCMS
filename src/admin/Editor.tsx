@@ -1,13 +1,18 @@
-import { ArrowBack, Send } from "@mui/icons-material";
-import { Box, IconButton } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import Container from "@mui/material/Container";
-import TextField from "@mui/material/TextField";
-import Toolbar from "@mui/material/Toolbar";
 import React, { useEffect, useState } from "react";
+import { ArrowBack, Send, MoreVert as MoreVertIcon } from "@mui/icons-material";
+import {
+  Box,
+  Container,
+  IconButton,
+  Menu,
+  MenuItem,
+  TextField,
+  Toolbar,
+} from "@mui/material";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import type { Post } from "../PostDetail";
 
@@ -15,12 +20,13 @@ function Editor() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [labels, setLabels] = useState<string[]>([]);
-
   const [uploading, setUploading] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
   const { id } = useParams<{ id: string }>();
   const quill = React.useRef<ReactQuill | null>(null);
   const navigate = useNavigate();
-  const theme = useTheme();
+  const { t } = useTranslation();
 
   async function handleSend() {
     if (!content) return;
@@ -46,8 +52,8 @@ function Editor() {
           navigate("/login");
           return;
         }
-        await res.json();
-        navigate("/");
+        const result: { rowid: number } = await res.json();
+        navigate(`/posts/${result.rowid}`);
       } else {
         const res = await fetch(`/api/posts/${id}`, {
           method: "PATCH",
@@ -144,9 +150,35 @@ function Editor() {
         >
           <Send />
         </IconButton>
+        <IconButton
+          size="large"
+          color="inherit"
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+        >
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+        >
+          <MenuItem component={RouterLink} to={`/posts/${id}`}>
+            {t("View")}
+          </MenuItem>
+          <MenuItem>{t("Save as draft")}</MenuItem>
+          <MenuItem>{t("Delete")}</MenuItem>
+        </Menu>
       </Toolbar>
       <Container
-        sx={{
+        sx={(theme) => ({
           overflowY: "auto",
           flexShrink: 0,
           mt: 2,
@@ -155,11 +187,11 @@ function Editor() {
           "& .ql-editor.ql-blank::before": {
             color: theme.palette.text.disabled,
           },
-        }}
+        })}
       >
         <TextField
           fullWidth
-          label="Title"
+          label={t("Title")}
           variant="standard"
           size="small"
           autoComplete="off"
@@ -169,7 +201,7 @@ function Editor() {
         />
         <TextField
           fullWidth
-          label="Labels"
+          label={t("Labels")}
           variant="standard"
           size="small"
           autoComplete="off"
@@ -182,13 +214,13 @@ function Editor() {
         <ReactQuill
           ref={quill}
           value={content}
-          placeholder={"Write something..."}
+          placeholder={t("Write something...")}
           modules={{ toolbar: "#ql-toolbar" }}
           onChange={setContent}
         />
       </Container>
       <Box
-        sx={{
+        sx={(theme) => ({
           color: theme.palette.text.primary,
           "& .ql-snow.ql-toolbar": {
             border: "none",
@@ -197,7 +229,7 @@ function Editor() {
           "& .ql-snow .ql-stroke": { stroke: theme.palette.text.primary },
           "& .ql-snow .ql-fill": { fill: theme.palette.text.primary },
           "& .ql-snow .ql-picker": { color: theme.palette.text.primary },
-        }}
+        })}
       >
         <div id="ql-toolbar">
           <button className="ql-bold"></button>

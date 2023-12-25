@@ -8,6 +8,7 @@
       "Drafts": "Drafts",
       "Edit": "Edit",
       "Home": "Home",
+      "Labels": "Labels",
       "Login": "Login",
       "No labels found": "No labels found",
       "No pages found": "No pages found",
@@ -18,8 +19,11 @@
       "Published": "Published",
       "Save": "Save",
       "Settings": "Settings",
+      "Title": "Title",
+      "(Untitled)": "(Untitled)",
       "Username": "Username",
-      "View blog": "View blog"
+      "View blog": "View blog",
+      "Write something...": "Write something..."
     }
   },
   "ko": {
@@ -31,6 +35,7 @@
       "Drafts": "임시",
       "Edit": "편집",
       "Home": "홈",
+      "Labels": "라벨",
       "Login": "로그인",
       "No labels found": "라벨이 없습니다",
       "No pages found": "페이지가 없습니다",
@@ -41,8 +46,11 @@
       "Published": "발행됨",
       "Save": "저장",
       "Settings": "설정",
+      "Title": "제목",
+      "(Untitled)": "(제목 없음)",
       "Username": "사용자 이름",
-      "View blog": "블로그 보기"
+      "View blog": "블로그 보기",
+      "Write something...": "글을 써보세요..."
     }
   },
   "ja": {
@@ -54,6 +62,7 @@
       "Drafts": "下書き",
       "Edit": "編集",
       "Home": "ホーム",
+      "Labels": "ラベル",
       "Login": "ログイン",
       "No labels found": "ラベルが見つかりません",
       "No pages found": "ページが見つかりません",
@@ -64,8 +73,11 @@
       "Published": "公開",
       "Save": "保存",
       "Settings": "設定",
+      "Title": "タイトル",
+      "(Untitled)": "(無題)",
       "Username": "ユーザー名",
-      "View blog": "ブログを見る"
+      "View blog": "ブログを見る",
+      "Write something...": "何か書いてみましょう..."
     }
   },
   "zh": {
@@ -77,6 +89,7 @@
       "Drafts": "草稿",
       "Edit": "编辑",
       "Home": "主页",
+      "Labels": "标签",
       "Login": "登录",
       "No labels found": "没有标签",
       "No pages found": "没有页面",
@@ -87,8 +100,11 @@
       "Published": "已发布",
       "Save": "保存",
       "Settings": "设置",
+      "Title": "标题",
+      "(Untitled)": "（无标题）",
       "Username": "用户名",
-      "View blog": "查看博客"
+      "View blog": "查看博客",
+      "Write something...": "写点什么..."
     }
   }
 }
