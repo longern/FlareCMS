@@ -65,6 +65,15 @@ function Layout() {
             <ListItem disablePadding>
               <ListItemButton
                 component={RouterLink}
+                to="/admin/pages"
+                selected={pathname === "/admin/pages"}
+              >
+                {t("Pages")}
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton
+                component={RouterLink}
                 to="/admin/settings"
                 selected={pathname === "/admin/settings"}
               >

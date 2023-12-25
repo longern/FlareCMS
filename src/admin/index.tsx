@@ -17,7 +17,11 @@ const router: RouteObject[] = [
       },
       {
         path: "posts",
-        element: <Posts />,
+        element: <Posts type="post" />,
+      },
+      {
+        path: "pages",
+        element: <Posts type="page" />,
       },
       {
         path: "posts/:id",

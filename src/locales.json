@@ -2,57 +2,81 @@
   "en": {
     "translation": {
       "Admin Panel": "Admin Panel",
+      "Delete": "Delete",
+      "Drafts": "Drafts",
+      "Edit": "Edit",
       "Home": "Home",
       "Login": "Login",
       "No labels found": "No labels found",
       "No pages found": "No pages found",
+      "No posts found": "No posts found",
       "Pages": "Pages",
       "Password": "Password",
       "Posts": "Posts",
+      "Published": "Published",
       "Settings": "Settings",
-      "Username": "Username"
+      "Username": "Username",
+      "View blog": "View blog"
     }
   },
   "ko": {
     "translation": {
       "Admin Panel": "관리자 패널",
+      "Delete": "삭제",
+      "Drafts": "임시",
+      "Edit": "편집",
       "Home": "홈",
       "Login": "로그인",
       "No labels found": "라벨이 없습니다",
       "No pages found": "페이지가 없습니다",
+      "No posts found": "글이 없습니다",
       "Pages": "페이지",
       "Password": "비밀번호",
       "Posts": "글",
+      "Published": "발행됨",
       "Settings": "설정",
-      "Username": "사용자 이름"
+      "Username": "사용자 이름",
+      "View blog": "블로그 보기"
     }
   },
   "ja": {
     "translation": {
       "Admin Panel": "管理パネル",
+      "Delete": "削除",
+      "Drafts": "下書き",
+      "Edit": "編集",
       "Home": "ホーム",
       "Login": "ログイン",
       "No labels found": "ラベルが見つかりません",
       "No pages found": "ページが見つかりません",
+      "No posts found": "投稿が見つかりません",
       "Pages": "ページ",
       "Password": "パスワード",
       "Posts": "投稿",
+      "Published": "公開",
       "Settings": "設定",
-      "Username": "ユーザー名"
+      "Username": "ユーザー名",
+      "View blog": "ブログを見る"
     }
   },
   "zh": {
     "translation": {
       "Admin Panel": "管理面板",
+      "Delete": "删除",
+      "Drafts": "草稿",
+      "Edit": "编辑",
       "Home": "主页",
       "Login": "登录",
       "No labels found": "没有标签",
       "No pages found": "没有页面",
+      "No posts found": "没有文章",
       "Pages": "页面",
       "Password": "密码",
       "Posts": "文章",
+      "Published": "已发布",
       "Settings": "设置",
-      "Username": "用户名"
+      "Username": "用户名",
+      "View blog": "查看博客"
     }
   }
 }
