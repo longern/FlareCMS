@@ -1,0 +1,58 @@
+{
+  "en": {
+    "translation": {
+      "Admin Panel": "Admin Panel",
+      "Home": "Home",
+      "Login": "Login",
+      "No labels found": "No labels found",
+      "No pages found": "No pages found",
+      "Pages": "Pages",
+      "Password": "Password",
+      "Posts": "Posts",
+      "Settings": "Settings",
+      "Username": "Username"
+    }
+  },
+  "ko": {
+    "translation": {
+      "Admin Panel": "관리자 패널",
+      "Home": "홈",
+      "Login": "로그인",
+      "No labels found": "라벨이 없습니다",
+      "No pages found": "페이지가 없습니다",
+      "Pages": "페이지",
+      "Password": "비밀번호",
+      "Posts": "글",
+      "Settings": "설정",
+      "Username": "사용자 이름"
+    }
+  },
+  "ja": {
+    "translation": {
+      "Admin Panel": "管理パネル",
+      "Home": "ホーム",
+      "Login": "ログイン",
+      "No labels found": "ラベルが見つかりません",
+      "No pages found": "ページが見つかりません",
+      "Pages": "ページ",
+      "Password": "パスワード",
+      "Posts": "投稿",
+      "Settings": "設定",
+      "Username": "ユーザー名"
+    }
+  },
+  "zh": {
+    "translation": {
+      "Admin Panel": "管理面板",
+      "Home": "主页",
+      "Login": "登录",
+      "No labels found": "没有标签",
+      "No pages found": "没有页面",
+      "Pages": "页面",
+      "Password": "密码",
+      "Posts": "文章",
+      "Settings": "设置",
+      "Username": "用户名"
+    }
+  }
+}

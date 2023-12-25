@@ -8,12 +8,14 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   async function handleLogin() {
     try {
@@ -47,7 +49,7 @@ function Login() {
             }}
           >
             <TextField
-              label="Username"
+              label={t("Username")}
               autoComplete="username"
               variant="outlined"
               margin="normal"
@@ -58,7 +60,7 @@ function Login() {
             <TextField
               type="password"
               autoComplete="current-password"
-              label="Password"
+              label={t("Password")}
               variant="outlined"
               margin="normal"
               fullWidth
@@ -73,7 +75,7 @@ function Login() {
               fullWidth
               sx={{ marginTop: "1rem" }}
             >
-              Login
+              {t("Login")}
             </Button>
             {error && (
               <Typography color="error" sx={{ mt: 2 }}>

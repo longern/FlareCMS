@@ -18,11 +18,13 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function Layout() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (localStorage.getItem("token")) return;
@@ -57,7 +59,7 @@ function Layout() {
                 to="/admin/posts"
                 selected={pathname === "/admin/posts"}
               >
-                Posts
+                {t("Posts")}
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
@@ -66,7 +68,7 @@ function Layout() {
                 to="/admin/settings"
                 selected={pathname === "/admin/settings"}
               >
-                Settings
+                {t("Settings")}
               </ListItemButton>
             </ListItem>
           </List>
@@ -74,7 +76,7 @@ function Layout() {
           <List>
             <ListItem disablePadding>
               <ListItemButton component={RouterLink} to="/">
-                View Blog
+                {t("View blog")}
               </ListItemButton>
             </ListItem>
           </List>

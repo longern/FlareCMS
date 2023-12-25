@@ -13,6 +13,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import App from "./App";
 import PostDetail from "./PostDetail";
 import adminRouter from "./admin/index";
+import "./i18n";
 
 const darkTheme = createTheme({
   palette: {
