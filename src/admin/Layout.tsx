@@ -9,6 +9,7 @@ import {
   List,
   ListItem,
   ListItemButton,
+  ListItemText,
   Toolbar,
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
@@ -59,7 +60,7 @@ function Layout() {
                 to="/admin/posts"
                 selected={pathname === "/admin/posts"}
               >
-                {t("Posts")}
+                <ListItemText primary={t("Posts")}></ListItemText>
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
@@ -68,7 +69,7 @@ function Layout() {
                 to="/admin/pages"
                 selected={pathname === "/admin/pages"}
               >
-                {t("Pages")}
+                <ListItemText primary={t("Pages")}></ListItemText>
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
@@ -77,7 +78,7 @@ function Layout() {
                 to="/admin/settings"
                 selected={pathname === "/admin/settings"}
               >
-                {t("Settings")}
+                <ListItemText primary={t("Settings")}></ListItemText>
               </ListItemButton>
             </ListItem>
           </List>
@@ -85,7 +86,7 @@ function Layout() {
           <List>
             <ListItem disablePadding>
               <ListItemButton component={RouterLink} to="/">
-                {t("View blog")}
+                <ListItemText primary={t("View blog")}></ListItemText>
               </ListItemButton>
             </ListItem>
           </List>

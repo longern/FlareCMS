@@ -2,6 +2,8 @@
   "en": {
     "translation": {
       "Admin Panel": "Admin Panel",
+      "Blog Name": "Blog Name",
+      "Blog Description": "Blog Description",
       "Delete": "Delete",
       "Drafts": "Drafts",
       "Edit": "Edit",
@@ -14,6 +16,7 @@
       "Password": "Password",
       "Posts": "Posts",
       "Published": "Published",
+      "Save": "Save",
       "Settings": "Settings",
       "Username": "Username",
       "View blog": "View blog"
@@ -22,6 +25,8 @@
   "ko": {
     "translation": {
       "Admin Panel": "관리자 패널",
+      "Blog Name": "블로그 이름",
+      "Blog Description": "블로그 설명",
       "Delete": "삭제",
       "Drafts": "임시",
       "Edit": "편집",
@@ -34,6 +39,7 @@
       "Password": "비밀번호",
       "Posts": "글",
       "Published": "발행됨",
+      "Save": "저장",
       "Settings": "설정",
       "Username": "사용자 이름",
       "View blog": "블로그 보기"
@@ -42,6 +48,8 @@
   "ja": {
     "translation": {
       "Admin Panel": "管理パネル",
+      "Blog Name": "ブログ名",
+      "Blog Description": "ブログの説明",
       "Delete": "削除",
       "Drafts": "下書き",
       "Edit": "編集",
@@ -54,6 +62,7 @@
       "Password": "パスワード",
       "Posts": "投稿",
       "Published": "公開",
+      "Save": "保存",
       "Settings": "設定",
       "Username": "ユーザー名",
       "View blog": "ブログを見る"
@@ -62,6 +71,8 @@
   "zh": {
     "translation": {
       "Admin Panel": "管理面板",
+      "Blog Name": "博客名称",
+      "Blog Description": "博客描述",
       "Delete": "删除",
       "Drafts": "草稿",
       "Edit": "编辑",
@@ -74,6 +85,7 @@
       "Password": "密码",
       "Posts": "文章",
       "Published": "已发布",
+      "Save": "保存",
       "Settings": "设置",
       "Username": "用户名",
       "View blog": "查看博客"

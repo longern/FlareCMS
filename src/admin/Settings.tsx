@@ -1,5 +1,6 @@
-import { Button, Container, TextField, Typography } from "@mui/material";
+import { Button, Container, TextField } from "@mui/material";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useRouteLoaderData } from "react-router-dom";
 
 function Settings() {
@@ -13,6 +14,8 @@ function Settings() {
   const [blogDescription, setBlogDescription] = useState(
     options.blogDescription || ""
   );
+
+  const { t } = useTranslation();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,10 +40,9 @@ function Settings() {
 
   return (
     <Container sx={{ py: 2 }}>
-      <Typography variant="h4">Settings</Typography>
       <form onSubmit={handleSubmit}>
         <TextField
-          label="Blog Name"
+          label={t("Blog Name")}
           required
           variant="outlined"
           margin="normal"
@@ -49,7 +51,7 @@ function Settings() {
           onChange={(e) => setBlogName(e.target.value)}
         />
         <TextField
-          label="Blog Description"
+          label={t("Blog Description")}
           variant="outlined"
           margin="normal"
           fullWidth
@@ -64,7 +66,7 @@ function Settings() {
           size="large"
           sx={{ marginTop: "1rem" }}
         >
-          Save
+          {t("Save")}
         </Button>
       </form>
     </Container>
