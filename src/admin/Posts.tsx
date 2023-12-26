@@ -105,7 +105,7 @@ function Posts({ type }: { type: "page" | "post" }) {
               <CardContent>
                 <Link
                   component={RouterLink}
-                  to={`/admin/posts/${post.rowid}`}
+                  to={`/admin/${type}s/${post.rowid}`}
                   underline="none"
                   sx={{ "-webkit-tap-highlight-color": "transparent" }}
                 >
@@ -160,7 +160,7 @@ function Posts({ type }: { type: "page" | "post" }) {
         >
           <MenuItem
             component={RouterLink}
-            to={`/admin/posts/${activePost?.rowid}`}
+            to={`/admin/${type}s/${activePost?.rowid}`}
           >
             <ListItemIcon>
               <EditIcon />
@@ -181,7 +181,7 @@ function Posts({ type }: { type: "page" | "post" }) {
       <Fab
         color="primary"
         component={RouterLink}
-        to="/admin/posts/new"
+        to={`/admin/${type}s/new`}
         sx={(theme) => ({
           position: "fixed",
           bottom: theme.spacing(4),

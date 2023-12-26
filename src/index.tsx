@@ -31,32 +31,34 @@ const AppGlobalStyles = (
   />
 );
 
+async function rootLoader({ request }) {
+  try {
+    const res = await fetch("/api/options");
+    const options: Record<string, string> = await res.json();
+
+    if (
+      options["error"] === "Secret not set" &&
+      new URL(request.url).pathname !== "/install"
+    )
+      return redirect("/install");
+
+    if (options["blogName"]) document.title = options["blogName"];
+    if (options["blogDescription"])
+      document
+        .querySelector('meta[name="description"]')
+        ?.setAttribute("content", options["blogDescription"]);
+    return options;
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Outlet />,
     id: "root",
-    async loader({ request }) {
-      try {
-        const res = await fetch("/api/options");
-        const options: Record<string, string> = await res.json();
-
-        if (
-          options["error"] === "Secret not set" &&
-          new URL(request.url).pathname !== "/install"
-        )
-          return redirect("/install");
-
-        if (options["blogName"]) document.title = options["blogName"];
-        if (options["blogDescription"])
-          document
-            .querySelector('meta[name="description"]')
-            ?.setAttribute("content", options["blogDescription"]);
-        return options;
-      } catch (err) {
-        return { error: err.message };
-      }
-    },
+    loader: rootLoader,
     children: [
       {
         path: "",

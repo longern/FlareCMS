@@ -105,6 +105,7 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
     .set(body)
     .where(eq(posts.rowid, postId))
     .execute();
+  body.rowid = postId;
   if (result.success) {
     return Response.json(body);
   } else {
