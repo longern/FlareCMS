@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CircularProgress,
@@ -39,17 +40,24 @@ function Posts({ type }: { type: "page" | "post" }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  const fetchPosts = useCallback(
+    (params: { type?: "page" | "post"; status?: "publish" | "draft" }) => {
+      setError("");
+      setPosts(null);
+      const searchParams = new URLSearchParams(params);
+      const request = fetch(`/api/posts?${searchParams}`);
+      request
+        .then((response) => response.json() as Promise<{ items: Post[] }>)
+        .then((body) => setPosts(body.items))
+        .catch((err) => setError(err.message));
+    },
+    []
+  );
+
   useEffect(() => {
-    const searchParams = new URLSearchParams({
-      type,
-      status: activeTab === 0 ? "publish" : "draft",
-    });
-    const request = fetch(`/api/posts?${searchParams}`);
-    request
-      .then((response) => response.json() as Promise<{ items: Post[] }>)
-      .then((body) => setPosts(body.items))
-      .catch((err) => setError(err.message));
-  }, [activeTab, type]);
+    const status = activeTab === 0 ? "publish" : "draft";
+    fetchPosts({ type, status });
+  }, [activeTab, fetchPosts, type]);
 
   const handleDelete = useCallback(
     (post: Post) => {
@@ -75,7 +83,12 @@ function Posts({ type }: { type: "page" | "post" }) {
       </Tabs>
       <Container sx={{ py: 2 }}>
         {error ? (
-          <code>{error}</code>
+          <Stack alignItems="center" spacing={2}>
+            <code>{error}</code>
+            <Button variant="contained" onClick={() => fetchPosts({ type })}>
+              {t("Retry")}
+            </Button>
+          </Stack>
         ) : posts === null ? (
           <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
             <CircularProgress />
