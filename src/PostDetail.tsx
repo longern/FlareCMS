@@ -20,6 +20,8 @@ export interface Post {
   rowid: number;
   title: string;
   content: string;
+  type: "post" | "page";
+  status: "publish" | "draft";
   published: number;
   updated: number;
   labels?: string[];

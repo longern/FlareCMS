@@ -62,9 +62,10 @@ function App() {
       type: "post",
       status: "publish",
       orderBy: "published",
+      q: params.label ? `label:${params.label}` : undefined,
     });
     const request = params.label
-      ? fetch(`/api/posts/search?q=label:${params.label}`)
+      ? fetch(`/api/posts/search?${searchParams}`)
       : fetch(`/api/posts?${searchParams}`);
     request
       .then((response) => response.json() as Promise<{ items: Post[] }>)

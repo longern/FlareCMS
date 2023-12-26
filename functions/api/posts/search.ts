@@ -31,6 +31,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
           labels,
           and(eq(posts.rowid, labels.postId), eq(labels.name, queryLabel))
         )
+        .where(eq(posts.status, "publish"))
         .all();
       return items.map((item) => item.posts).reverse();
     } else if (words.length > 0) {

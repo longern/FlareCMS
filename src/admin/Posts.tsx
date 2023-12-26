@@ -22,6 +22,9 @@ import {
   Delete as DeleteIcon,
   Edit as EditIcon,
   MoreVert as MoreVertIcon,
+  Public as PublicIcon,
+  PublicOff as PublicOffIcon,
+  Visibility as VisibilityIcon,
 } from "@mui/icons-material";
 import React, { useCallback, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
@@ -58,6 +61,36 @@ function Posts({ type }: { type: "page" | "post" }) {
     const status = activeTab === 0 ? "publish" : "draft";
     fetchPosts({ type, status });
   }, [activeTab, fetchPosts, type]);
+
+  const handlePublish = useCallback((post: Post) => {
+    setAnchorEl(null);
+    setActivePost(null);
+    fetch(`/api/posts/${post.rowid}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        status: "publish",
+      }),
+    }).then(() => setActiveTab(0));
+  }, []);
+
+  const handleUnpublish = useCallback((post: Post) => {
+    setAnchorEl(null);
+    setActivePost(null);
+    fetch(`/api/posts/${post.rowid}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        status: "draft",
+      }),
+    }).then(() => setActiveTab(1));
+  }, []);
 
   const handleDelete = useCallback(
     (post: Post) => {
@@ -160,6 +193,15 @@ function Posts({ type }: { type: "page" | "post" }) {
         >
           <MenuItem
             component={RouterLink}
+            to={`/${type}s/${activePost?.rowid}`}
+          >
+            <ListItemIcon>
+              <VisibilityIcon />
+            </ListItemIcon>
+            <ListItemText primary={t("View")}></ListItemText>
+          </MenuItem>
+          <MenuItem
+            component={RouterLink}
             to={`/admin/${type}s/${activePost?.rowid}`}
           >
             <ListItemIcon>
@@ -167,14 +209,26 @@ function Posts({ type }: { type: "page" | "post" }) {
             </ListItemIcon>
             <ListItemText primary={t("Edit")}></ListItemText>
           </MenuItem>
-          <MenuItem
-            onClick={() => handleDelete(activePost)}
-            sx={(theme) => ({ color: theme.palette.error.main })}
-          >
-            <ListItemIcon>
+          {activePost?.status === "publish" ? (
+            <MenuItem onClick={() => handleUnpublish(activePost)}>
+              <ListItemIcon>
+                <PublicOffIcon />
+              </ListItemIcon>
+              <ListItemText primary={t("Unpublish")}></ListItemText>
+            </MenuItem>
+          ) : (
+            <MenuItem onClick={() => handlePublish(activePost)}>
+              <ListItemIcon>
+                <PublicIcon />
+              </ListItemIcon>
+              <ListItemText primary={t("Publish")}></ListItemText>
+            </MenuItem>
+          )}
+          <MenuItem onClick={() => handleDelete(activePost)}>
+            <ListItemIcon color="error">
               <DeleteIcon />
             </ListItemIcon>
-            <ListItemText primary={t("Delete")}></ListItemText>
+            <ListItemText primary={t("Delete")} color="error"></ListItemText>
           </MenuItem>
         </Menu>
       </Container>

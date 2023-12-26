@@ -28,7 +28,7 @@ function PageList() {
 
   useEffect(() => {
     (async () => {
-      const res = await fetch("/api/posts?type=page");
+      const res = await fetch("/api/posts?type=page&status=publish");
       const json: { items: Post[] } = await res.json();
       setPages(json.items);
     })();
@@ -104,19 +104,17 @@ function Sidebar() {
             </Typography>
           </Box>
         ) : (
-          <Box>
+          <Stack direction="row" flexWrap="wrap" gap={1}>
             {labels.map((label) => (
               <Link
                 key={label.name}
                 component={RouterLink}
                 to={`/posts/label/${label.name}`}
-                underline="hover"
-                sx={{ marginRight: "0.5rem" }}
               >
                 <Chip label={`${label.name} (${label.count})`} />
               </Link>
             ))}
-          </Box>
+          </Stack>
         )}
       </Stack>
     </Stack>
