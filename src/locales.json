@@ -5,6 +5,7 @@
       "Blog Name": "Blog Name",
       "Blog Description": "Blog Description",
       "Delete": "Delete",
+      "Depublish": "Depublish",
       "Drafts": "Drafts",
       "Edit": "Edit",
       "Home": "Home",
@@ -16,6 +17,7 @@
       "Pages": "Pages",
       "Password": "Password",
       "Posts": "Posts",
+      "Publish": "Publish",
       "Published": "Published",
       "Retry": "Retry",
       "Save": "Save",
@@ -23,6 +25,7 @@
       "Title": "Title",
       "(Untitled)": "(Untitled)",
       "Username": "Username",
+      "View": "View",
       "View blog": "View blog",
       "Write something...": "Write something..."
     }
@@ -33,6 +36,7 @@
       "Blog Name": "블로그 이름",
       "Blog Description": "블로그 설명",
       "Delete": "삭제",
+      "Depublish": "발행 취소",
       "Drafts": "임시",
       "Edit": "편집",
       "Home": "홈",
@@ -44,6 +48,7 @@
       "Pages": "페이지",
       "Password": "비밀번호",
       "Posts": "글",
+      "Publish": "발행",
       "Published": "발행됨",
       "Retry": "재시도",
       "Save": "저장",
@@ -51,6 +56,7 @@
       "Title": "제목",
       "(Untitled)": "(제목 없음)",
       "Username": "사용자 이름",
+      "View": "보기",
       "View blog": "블로그 보기",
       "Write something...": "글을 써보세요..."
     }
@@ -61,6 +67,7 @@
       "Blog Name": "ブログ名",
       "Blog Description": "ブログの説明",
       "Delete": "削除",
+      "Depublish": "下書きに戻す",
       "Drafts": "下書き",
       "Edit": "編集",
       "Home": "ホーム",
@@ -72,6 +79,7 @@
       "Pages": "ページ",
       "Password": "パスワード",
       "Posts": "投稿",
+      "Publish": "公開",
       "Published": "公開",
       "Retry": "リトライ",
       "Save": "保存",
@@ -79,6 +87,7 @@
       "Title": "タイトル",
       "(Untitled)": "(無題)",
       "Username": "ユーザー名",
+      "View": "表示",
       "View blog": "ブログを見る",
       "Write something...": "何か書いてみましょう..."
     }
@@ -89,6 +98,7 @@
       "Blog Name": "博客名称",
       "Blog Description": "博客描述",
       "Delete": "删除",
+      "Depublish": "取消发布",
       "Drafts": "草稿",
       "Edit": "编辑",
       "Home": "主页",
@@ -100,6 +110,7 @@
       "Pages": "页面",
       "Password": "密码",
       "Posts": "文章",
+      "Publish": "发布",
       "Published": "已发布",
       "Retry": "重试",
       "Save": "保存",
@@ -107,6 +118,7 @@
       "Title": "标题",
       "(Untitled)": "（无标题）",
       "Username": "用户名",
+      "View": "查看",
       "View blog": "查看博客",
       "Write something...": "写点什么..."
     }

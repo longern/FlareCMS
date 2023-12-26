@@ -64,7 +64,6 @@ function Posts({ type }: { type: "page" | "post" }) {
 
   const handlePublish = useCallback((post: Post) => {
     setAnchorEl(null);
-    setActivePost(null);
     fetch(`/api/posts/${post.rowid}`, {
       method: "PATCH",
       headers: {
@@ -77,9 +76,8 @@ function Posts({ type }: { type: "page" | "post" }) {
     }).then(() => setActiveTab(0));
   }, []);
 
-  const handleUnpublish = useCallback((post: Post) => {
+  const handleDepublish = useCallback((post: Post) => {
     setAnchorEl(null);
-    setActivePost(null);
     fetch(`/api/posts/${post.rowid}`, {
       method: "PATCH",
       headers: {
@@ -178,10 +176,7 @@ function Posts({ type }: { type: "page" | "post" }) {
         <Menu
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
-          onClose={() => {
-            setAnchorEl(null);
-            setActivePost(null);
-          }}
+          onClose={() => setAnchorEl(null)}
           anchorOrigin={{
             vertical: "bottom",
             horizontal: "right",
@@ -210,11 +205,11 @@ function Posts({ type }: { type: "page" | "post" }) {
             <ListItemText primary={t("Edit")}></ListItemText>
           </MenuItem>
           {activePost?.status === "publish" ? (
-            <MenuItem onClick={() => handleUnpublish(activePost)}>
+            <MenuItem onClick={() => handleDepublish(activePost)}>
               <ListItemIcon>
                 <PublicOffIcon />
               </ListItemIcon>
-              <ListItemText primary={t("Unpublish")}></ListItemText>
+              <ListItemText primary={t("Depublish")}></ListItemText>
             </MenuItem>
           ) : (
             <MenuItem onClick={() => handlePublish(activePost)}>
@@ -225,10 +220,13 @@ function Posts({ type }: { type: "page" | "post" }) {
             </MenuItem>
           )}
           <MenuItem onClick={() => handleDelete(activePost)}>
-            <ListItemIcon color="error">
-              <DeleteIcon />
+            <ListItemIcon>
+              <DeleteIcon color="error" />
             </ListItemIcon>
-            <ListItemText primary={t("Delete")} color="error"></ListItemText>
+            <ListItemText
+              primary={t("Delete")}
+              primaryTypographyProps={{ color: "error" }}
+            ></ListItemText>
           </MenuItem>
         </Menu>
       </Container>
