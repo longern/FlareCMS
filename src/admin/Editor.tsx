@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ArrowBack, Send, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import {
   Box,
@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 
 import type { Post } from "../PostDetail";
 
-function Editor() {
+export function Editor({ type }: { type: "post" | "page" }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [labels, setLabels] = useState<string[]>([]);
@@ -28,25 +28,35 @@ function Editor() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  async function handleSend() {
-    if (!content) return;
+  const handleSend = useCallback(
+    async (post: {
+      id?: number;
+      title: string;
+      content: string;
+      type?: "post" | "page";
+      status?: "publish" | "draft";
+      labels?: string[];
+    }) => {
+      if (!post.content) return;
+      const id = post.id;
+      delete post.id;
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
 
-    try {
-      setUploading(true);
-      if (id === "new") {
-        const res = await fetch("/api/posts", {
-          method: "POST",
+      try {
+        setUploading(true);
+        const method = id ? "PATCH" : "POST";
+        const res = await fetch(`/api/posts/${id || ""}`, {
+          method,
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ title, content, labels }),
+          body: JSON.stringify(post),
         });
         if (res.status === 401) {
           navigate("/login");
@@ -54,28 +64,14 @@ function Editor() {
         }
         const result: { rowid: number } = await res.json();
         navigate(`/posts/${result.rowid}`);
-      } else {
-        const res = await fetch(`/api/posts/${id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ title, content, labels }),
-        });
-        if (res.status === 401) {
-          navigate("/login");
-          return;
-        }
-        await res.json();
-        navigate(`/posts/${id}`);
+      } catch (err) {
+        if (err instanceof Error) console.error(err.message);
+      } finally {
+        setUploading(false);
       }
-    } catch (err) {
-      if (err instanceof Error) console.error(err.message);
-    } finally {
-      setUploading(false);
-    }
-  }
+    },
+    [navigate]
+  );
 
   function handleUploadMedia() {
     const input = document.createElement("input");
@@ -135,18 +131,32 @@ function Editor() {
           size="large"
           color="inherit"
           component={RouterLink}
-          to="/admin/posts"
+          to={`/admin/${type}s`}
         >
           <ArrowBack />
         </IconButton>
         <Box flexGrow={1} textAlign="center">
-          {id === "new" ? "New Post" : "Edit Post"}
+          {type === "post"
+            ? id === "new"
+              ? t("New post")
+              : t("Edit post")
+            : id === "new"
+            ? t("New page")
+            : t("Edit page")}
         </Box>
         <IconButton
           size="large"
           color="inherit"
           disabled={uploading}
-          onClick={handleSend}
+          onClick={() =>
+            handleSend({
+              id: id === "new" ? undefined : parseInt(id),
+              title,
+              content,
+              type,
+              labels,
+            })
+          }
         >
           <Send />
         </IconButton>
@@ -244,5 +254,3 @@ function Editor() {
     </div>
   );
 }
-
-export default Editor;

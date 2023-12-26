@@ -26,14 +26,21 @@ const router: RouteObject[] = [
       {
         path: "posts/:id",
         lazy: async () => {
-          const Component = (await import("./Editor")).default;
-          return { Component };
+          const { Editor } = await import("./Editor");
+          return { element: <Editor type="post" /> };
+        },
+      },
+      {
+        path: "pages/:id",
+        lazy: async () => {
+          const { Editor } = await import("./Editor");
+          return { element: <Editor type="page" /> };
         },
       },
       {
         path: "settings",
         element: <Settings />,
-      }
+      },
     ],
   },
 ];
